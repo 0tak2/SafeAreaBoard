@@ -1,0 +1,12 @@
+//
+//  Release.xcconfig
+//  SafeAreaBoard
+//
+//  Created by 임영택 on 4/10/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+SUPABASE_URL=https:/$()/YOUR_PROJECT_ID.supabase.co
+SUPABASE_KEY=YOUR_SUPABASE_ANON_KEY
