@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D2D60012DA8AEE400BF5FE3 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 3D2D60002DA8AEE400BF5FE3 /* Swinject */; };
 		3DD0594D2DA755A600915188 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD0594C2DA755A600915188 /* Supabase */; };
 		3DD059522DA755DB00915188 /* Debug.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = 3DD059512DA755DB00915188 /* Debug.xcconfig.example */; };
 		3DD059542DA7569700915188 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3DD059532DA7569700915188 /* Debug.xcconfig */; };
@@ -78,6 +79,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3DD0594D2DA755A600915188 /* Supabase in Frameworks */,
+				3D2D60012DA8AEE400BF5FE3 /* Swinject in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +153,7 @@
 			name = SafeAreaBoard;
 			packageProductDependencies = (
 				3DD0594C2DA755A600915188 /* Supabase */,
+				3D2D60002DA8AEE400BF5FE3 /* Swinject */,
 			);
 			productName = SafeAreaBoard;
 			productReference = 3D040DCB2DA6A0210040493B /* SafeAreaBoard.app */;
@@ -236,6 +239,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				3DD0594A2DA7559100915188 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				3D2D5FFF2DA8AEE400BF5FE3 /* XCRemoteSwiftPackageReference "Swinject" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3D040DCC2DA6A0210040493B /* Products */;
@@ -440,6 +444,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SafeAreaBoard/SafeAreaBoard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SafeAreaBoard/Preview Content\"";
@@ -471,6 +476,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SafeAreaBoard/SafeAreaBoard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SafeAreaBoard/Preview Content\"";
@@ -610,17 +616,30 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3D2D5FFF2DA8AEE400BF5FE3 /* XCRemoteSwiftPackageReference "Swinject" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Swinject/Swinject.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.9.1;
+			};
+		};
 		3DD0594A2DA7559100915188 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/supabase/supabase-swift";
 			requirement = {
 				kind = exactVersion;
-				version = 2.5.1;
+				version = 2.26.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3D2D60002DA8AEE400BF5FE3 /* Swinject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D2D5FFF2DA8AEE400BF5FE3 /* XCRemoteSwiftPackageReference "Swinject" */;
+			productName = Swinject;
+		};
 		3DD0594C2DA755A600915188 /* Supabase */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3DD0594A2DA7559100915188 /* XCRemoteSwiftPackageReference "supabase-swift" */;
