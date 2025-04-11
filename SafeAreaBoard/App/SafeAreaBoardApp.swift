@@ -11,7 +11,8 @@ import SwiftUI
 struct SafeAreaBoardApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppView(viewModel: DIContainerProvider.shared.container.resolve(AppViewModel.self)!)
+                .environmentObject(DIContainerEnvironment())
         }
     }
 }
