@@ -34,3 +34,7 @@ xcuserdata/
 Release.xcconfig
 Debug.xcconfig
 
+### Supabase ###
+**/supabase/.branches
+**/supabase/.temp
+
