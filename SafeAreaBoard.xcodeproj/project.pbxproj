@@ -13,6 +13,7 @@
 		3DD059542DA7569700915188 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3DD059532DA7569700915188 /* Debug.xcconfig */; };
 		3DD059562DA756A000915188 /* Release.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = 3DD059552DA756A000915188 /* Release.xcconfig.example */; };
 		3DD059582DA756AD00915188 /* Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3DD059572DA756AD00915188 /* Release.xcconfig */; };
+		3DF2597D2DAA3F1500A22457 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 3DF2597C2DAA3F1500A22457 /* Supabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,13 @@
 			);
 			target = 3D040DCA2DA6A0210040493B /* SafeAreaBoard */;
 		};
+		3DF259732DAA316200A22457 /* Exceptions for "SafeAreaBoardTests" folder in "SafeAreaBoardTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3D040DDA2DA6A0220040493B /* SafeAreaBoardTests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -63,6 +71,9 @@
 		};
 		3D040DDE2DA6A0220040493B /* SafeAreaBoardTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3DF259732DAA316200A22457 /* Exceptions for "SafeAreaBoardTests" folder in "SafeAreaBoardTests" target */,
+			);
 			path = SafeAreaBoardTests;
 			sourceTree = "<group>";
 		};
@@ -92,6 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DF2597D2DAA3F1500A22457 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +196,7 @@
 			);
 			name = SafeAreaBoardTests;
 			packageProductDependencies = (
+				3DF2597C2DAA3F1500A22457 /* Supabase */,
 			);
 			productName = SafeAreaBoardTests;
 			productReference = 3D040DDB2DA6A0220040493B /* SafeAreaBoardTests.xctest */;
@@ -511,12 +524,14 @@
 		};
 		3D040DF32DA6A0220040493B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3DD059572DA756AD00915188 /* Release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XS9UN8F2AX;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SafeAreaBoardTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.youngtaek.SafeAreaBoardTests;
@@ -530,12 +545,14 @@
 		};
 		3D040DF42DA6A0220040493B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3DD059572DA756AD00915188 /* Release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XS9UN8F2AX;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SafeAreaBoardTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.youngtaek.SafeAreaBoardTests;
@@ -648,6 +665,11 @@
 			productName = Swinject;
 		};
 		3DD0594C2DA755A600915188 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DD0594A2DA7559100915188 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+		3DF2597C2DAA3F1500A22457 /* Supabase */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3DD0594A2DA7559100915188 /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
