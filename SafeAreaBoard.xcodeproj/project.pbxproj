@@ -71,6 +71,11 @@
 			path = SafeAreaBoardUITests;
 			sourceTree = "<group>";
 		};
+		3DF2595C2DAA204C00A22457 /* Documents */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Documents;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +108,7 @@
 		3D040DC22DA6A0210040493B = {
 			isa = PBXGroup;
 			children = (
+				3DF2595C2DAA204C00A22457 /* Documents */,
 				3DD059512DA755DB00915188 /* Debug.xcconfig.example */,
 				3DD059552DA756A000915188 /* Release.xcconfig.example */,
 				3DD059572DA756AD00915188 /* Release.xcconfig */,
@@ -149,6 +155,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				3D040DCD2DA6A0210040493B /* SafeAreaBoard */,
+				3DF2595C2DAA204C00A22457 /* Documents */,
 			);
 			name = SafeAreaBoard;
 			packageProductDependencies = (
