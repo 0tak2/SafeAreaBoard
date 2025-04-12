@@ -14,6 +14,7 @@ final class AppViewModel: ObservableObject {
     @Published var nicknameSettingNeeded = false
     @Published var editingNickname = ""
     @Published var isError = false
+    @Published var isAlertShow = false
     
     private let getAuthStateChangeAsnycStreamUseCase: any GetAuthStateChangeAsyncStreamUseCaseProtocol
     private let getCurrentUserProfileUseCase: any GetProfileUseCaseProtocol
@@ -95,6 +96,11 @@ final class AppViewModel: ObservableObject {
     
     func continueButtonTapped() {
         guard let userId = userId else {
+            return
+        }
+        
+        guard !editingNickname.isEmpty else {
+            isAlertShow = true
             return
         }
         

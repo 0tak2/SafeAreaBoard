@@ -16,33 +16,28 @@ struct IntroPageView: View {
     }
     
     var body: some View {
-        VStack(spacing: 36) {
+        VStack(spacing: 0) {
             Spacer()
                 .frame(height: 36)
             
-            ZStack {
-                Image("SafeArea")
-                    .frame(width: 307, height: 307)
-                Text("academy\n  .safeAreaBoard")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundStyle(CustomColors.primaryDarker1)
-            }
+            OnboardingHeaderView(title: "academy\n  .safeAreaBoard")
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 24) {
                 ForEach(introTexts, id: \.self) { text in
-                    Text(text)
+                    Text("\(text)")
                         .font(.body)
                         .multilineTextAlignment(.leading)
                 }
-                
-                SignInWithAppleButton { request in
-                    request.requestedScopes = [.email, .fullName]
-                } onCompletion: { result in
-                    viewModel.signInComplete(result: result)
-                }
-                .fixedSize()
             }
+            .padding(48)
+            
+            
+            SignInWithAppleButton { request in
+                request.requestedScopes = [.email, .fullName]
+            } onCompletion: { result in
+                viewModel.signInComplete(result: result)
+            }
+            .fixedSize()
         }
         .frame(maxHeight: .infinity, alignment: .top)
     }
