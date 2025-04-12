@@ -1,4 +1,6 @@
-# ERD
+# 데이터 설계
+
+## ERD
 
 ```mermaid
 erDiagram
@@ -40,3 +42,8 @@ erDiagram
         int post_id FK "대상 포스트 ID"
     }
 ```
+
+## 정책
+
+- posts - Soft Delete
+- reactions - Hard Delete
