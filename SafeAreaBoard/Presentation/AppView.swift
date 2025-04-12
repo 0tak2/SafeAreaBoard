@@ -25,7 +25,8 @@ struct AppView: View {
                     if viewModel.isSignedIn && viewModel.nicknameSettingNeeded {
                         SetPreferenceView(viewModel: viewModel)
                     } else {
-                        AuthTestView()
+                        let tabRouter = container.resolve(TabRouter.self)!
+                        MainTabView(tabRouter: tabRouter)
                     }
                 }
             }

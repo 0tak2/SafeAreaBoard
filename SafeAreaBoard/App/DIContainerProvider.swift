@@ -106,5 +106,9 @@ final class DIContainerProvider {
                 updateProfileUseCase: updateProfileUseCase
             )
         }
+        
+        container.register(TabRouter.self) { _ in
+            TabRouter()
+        }
     }
 }
