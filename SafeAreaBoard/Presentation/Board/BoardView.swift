@@ -24,11 +24,17 @@ struct BoardView: View {
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 24) {
                     if let myPost = viewModel.myPost {
-                        CardView(post: myPost)
+                        CardView(post: myPost) {
+                            viewModel.menuButtonTapped()
+                        } heartButtonTapped: { postId, isLiked in
+                            viewModel.heartButtonTapped(postId: postId, isLiked: isLiked)
+                        }
                     }
                     
                     ForEach(viewModel.posts, id: \.id) { post in
-                        CardView(post: post)
+                        CardView(post: post, editButtonTapped: nil) { postId, isLiked in
+                            viewModel.heartButtonTapped(postId: postId, isLiked: isLiked)
+                        }
                     }
                 }
             }
@@ -37,6 +43,11 @@ struct BoardView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .task {
             await viewModel.taskDidStart()
+        }
+        .confirmationDialog("편집 메뉴", isPresented: $viewModel.showingEditSheet) {
+            Button("수정", role: .none) {}
+            Button("삭제", role: .destructive) {}
+            Button("취소", role: .cancel) {}
         }
     }
     
@@ -63,7 +74,7 @@ struct BoardView: View {
                         .frame(width: 36)
                 }
                 .foregroundStyle(CustomColors.primary)
-
+                
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -72,5 +83,8 @@ struct BoardView: View {
 }
 
 #Preview {
-    BoardView(viewModel: BoardViewModel(getAllQuestionsUseCase: GetAllQuestionsUseCase(questionRepository: QuestionRepository(supabaseClient: SupabaseProvider.shared.supabase)), getAllPostsUseCase: GetAllPostsUseCase(postRepository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase), authService: AuthService(supabaseClient: SupabaseProvider.shared.supabase))))
+    let authService = AuthService(supabaseClient: SupabaseProvider.shared.supabase)
+    let reactionRepoitory = ReactionRepository(supabaseClient: SupabaseProvider.shared.supabase)
+    
+    BoardView(viewModel: BoardViewModel(getAllQuestionsUseCase: GetAllQuestionsUseCase(questionRepository: QuestionRepository(supabaseClient: SupabaseProvider.shared.supabase)), getAllPostsUseCase: GetAllPostsUseCase(postRepository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase), authService: authService), addReactionUseCase: AddReactionUseCase(reactionRepository: reactionRepoitory, authService: authService), removeReactionUseCase: RemoveReactionUseCase(reactionRepository: reactionRepoitory, authService: authService)))
 }

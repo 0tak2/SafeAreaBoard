@@ -9,13 +9,13 @@ import Foundation
 import Supabase
 import os.log
 
-protocol AddReactionUseCaseProtocol: UseCase where Command == Int, Result == Void {
+protocol RemoveReactionUseCaseProtocol: UseCase where Command == Int, Result == Void {
 }
 
-struct AddReactionUseCase: AddReactionUseCaseProtocol {
+struct RemoveReactionUseCase: RemoveReactionUseCaseProtocol {
     private let reactionRepository: ReactionRepositoryProtocol
     private let authService: AuthServiceProtocol
-    private let log = Logger.of("AddReactionUseCase")
+    private let log = Logger.of("RemoveReactionUseCase")
     private let reactionType: String = "heart"
     
     init(reactionRepository: ReactionRepositoryProtocol, authService: AuthServiceProtocol) {
@@ -33,7 +33,7 @@ struct AddReactionUseCase: AddReactionUseCaseProtocol {
                 return
             }
             
-            let _ = try await reactionRepository.insert(params: .init(type: reactionType, createdAt: Date(), profileId: userId, postId: command))
+            let _ = try await reactionRepository.delete(postId: command, profileId: userId)
         } catch {
             log.error("data layer error. \(error)")
             throw DomainError.dataLayerError(error.localizedDescription)

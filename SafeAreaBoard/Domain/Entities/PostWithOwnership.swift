@@ -19,8 +19,9 @@ struct PostWithOwnership {
     let questionId: Int?
     let profile: Profile?
     let reactions: [Reaction]?
+    let isReactedByMyself: Bool // 내가 좋아요 눌렀는지 여부
     
-    init(id: Int?, content: String?, createdAt: Date?, updatedAt: Date?, isDeleted: Bool?, isHidden: Bool?, profileId: UUID?, isMine: Bool, questionId: Int?, profile: Profile?, reactions: [Reaction]?) {
+    init(id: Int?, content: String?, createdAt: Date?, updatedAt: Date?, isDeleted: Bool?, isHidden: Bool?, profileId: UUID?, isMine: Bool, questionId: Int?, profile: Profile?, reactions: [Reaction]?, isReactedByMyself: Bool) {
         self.id = id
         self.content = content
         self.createdAt = createdAt
@@ -32,9 +33,10 @@ struct PostWithOwnership {
         self.questionId = questionId
         self.profile = profile
         self.reactions = reactions
+        self.isReactedByMyself = isReactedByMyself
     }
     
-    init(post: Post, isMine: Bool) {
+    init(post: Post, isMine: Bool, isReactedByMyself: Bool) {
         self.id = post.id
         self.content = post.content
         self.createdAt = post.createdAt
@@ -46,5 +48,6 @@ struct PostWithOwnership {
         self.questionId = post.questionId
         self.profile = post.profile
         self.reactions = post.reactions
+        self.isReactedByMyself = isReactedByMyself
     }
 }

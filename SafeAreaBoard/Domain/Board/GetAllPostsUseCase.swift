@@ -30,14 +30,27 @@ struct GetAllPostsUseCase: GetAllPostsUseCaseProtocol {
             let posts = try await postRepository.getAll(questionId: command)
             
             if let myUserId = try await authService.getCurrentUser()?.id {
-                return posts.map { PostWithOwnership(post: $0, isMine: $0.profileId == myUserId) }
+                return posts.map {
+                    PostWithOwnership(
+                        post: $0, isMine: $0.profileId == myUserId, isReactedByMyself: getIsReactedByMyself(post: $0, myUserId: myUserId)
+                    )
+                }
             } else {
                 log.warning("session expired...")
-                return posts.map { PostWithOwnership(post: $0, isMine: false) }
+                return posts.map { PostWithOwnership(post: $0, isMine: false, isReactedByMyself: false) }
             }
         } catch {
             log.error("postRepository error. \(error)")
             throw DomainError.dataLayerError(error.localizedDescription)
         }
+    }
+    
+    private func getIsReactedByMyself(post: Post, myUserId: UUID) -> Bool {
+        guard let reactions = post.reactions else {
+            log.warning("reactions is nil")
+            return false
+        }
+        
+        return reactions.first { $0.profileId == myUserId } != nil
     }
 }

@@ -48,4 +48,13 @@ final class ReactionRepository: ReactionRepositoryProtocol {
             .eq("id", value: reactionId)
             .execute()
     }
+    
+    func delete(postId: Int, profileId: UUID) async throws {
+        try await supabaseClient
+            .from(tableName)
+            .delete()
+            .eq("post_id", value: postId)
+            .eq("profile_id", value: profileId)
+            .execute()
+    }
 }

@@ -14,18 +14,25 @@ final class BoardViewModel: ObservableObject {
     @Published var myPost: PostWithOwnership?
     @Published var posts: [PostWithOwnership] = []
     @Published var isError: Bool = false
+    @Published var showingEditSheet: Bool = false
     
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let getAllPostsUseCase: any GetAllPostsUseCaseProtocol
+    private let addReactionUseCase: any AddReactionUseCaseProtocol
+    private let removeReactionUseCase: any RemoveReactionUseCaseProtocol
     
     private let log = Logger.of("BoardViewModel")
     
     init(
         getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol,
-        getAllPostsUseCase: any GetAllPostsUseCaseProtocol
+        getAllPostsUseCase: any GetAllPostsUseCaseProtocol,
+        addReactionUseCase: any AddReactionUseCaseProtocol,
+        removeReactionUseCase: any RemoveReactionUseCaseProtocol
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.getAllPostsUseCase = getAllPostsUseCase
+        self.addReactionUseCase = addReactionUseCase
+        self.removeReactionUseCase = removeReactionUseCase
     }
     
     func taskDidStart() async {
@@ -69,5 +76,57 @@ final class BoardViewModel: ObservableObject {
                 isError = true
             }
         }
+    }
+    
+    func menuButtonTapped() {
+        showingEditSheet = true
+    }
+    
+    func heartButtonTapped(postId: Int, isLiked: Bool) {
+        if isLiked {
+            addReaction(postId: postId)
+        } else {
+            removeReaction(postId: postId)
+        }
+    }
+    
+    private func addReaction(postId: Int) {
+        Task {
+            do {
+                try await addReactionUseCase.execute(command: postId)
+                log.debug("added reaction to post \(postId)")
+            } catch {
+                log.error("addReactionUseCase error: \(error)")
+                
+                await MainActor.run {
+                    isError = true
+                }
+            }
+        }
+    }
+    
+    private func removeReaction(postId: Int) {
+        Task {
+            do {
+                try await removeReactionUseCase.execute(command: postId)
+                log.debug("revoked reaction from post \(postId)")
+            } catch {
+                log.error("removeReactionUseCase error: \(error)")
+                
+                await MainActor.run {
+                    isError = true
+                }
+            }
+        }
+    }
+    
+    func deleteButtonTapped() {
+        // TODO: Delete post
+        print("deleteButtonTapped")
+    }
+    
+    func editButtonTapped() {
+        // TODO: Edit post
+        print("editButtonTapped")
     }
 }

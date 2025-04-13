@@ -34,6 +34,9 @@ final class DIContainerProvider {
         
         container.register(PostRepositoryProtocol.self) { _ in PostRepository(supabaseClient: SupabaseProvider.shared.supabase)}
             .inObjectScope(.container)
+        
+        container.register(ReactionRepositoryProtocol.self) { _ in ReactionRepository(supabaseClient: SupabaseProvider.shared.supabase)}
+            .inObjectScope(.container)
     }
     
     private func registerDomainLayer() {
@@ -105,6 +108,30 @@ final class DIContainerProvider {
             
             return GetAllPostsUseCase(postRepository: postRepository, authService: authService)
         }
+        
+        container.register((any AddReactionUseCaseProtocol).self) { r in
+            guard let reactionRepository = r.resolve(ReactionRepositoryProtocol.self) else {
+                fatalError("ReactionRepository not resolved")
+            }
+            
+            guard let authService = r.resolve(AuthServiceProtocol.self) else {
+                fatalError("AuthService not resolved")
+            }
+            
+            return AddReactionUseCase(reactionRepository: reactionRepository, authService: authService)
+        }
+        
+        container.register((any RemoveReactionUseCaseProtocol).self) { r in
+            guard let reactionRepository = r.resolve(ReactionRepositoryProtocol.self) else {
+                fatalError("ReactionRepository not resolved")
+            }
+            
+            guard let authService = r.resolve(AuthServiceProtocol.self) else {
+                fatalError("AuthService not resolved")
+            }
+            
+            return RemoveReactionUseCase(reactionRepository: reactionRepository, authService: authService)
+        }
     }
     
     private func registerPresentationLayer() {
@@ -146,7 +173,20 @@ final class DIContainerProvider {
                 fatalError("GetAllPostsUseCase not resolved")
             }
             
-            return BoardViewModel(getAllQuestionsUseCase: getAllQuestionsUseCase, getAllPostsUseCase: getAllPostsUseCase)
+            guard let addReactionUseCase = r.resolve((any AddReactionUseCaseProtocol).self) else {
+                fatalError("AddReactionUseCase not resolved")
+            }
+            
+            guard let removeReactionUseCase = r.resolve((any RemoveReactionUseCaseProtocol).self) else {
+                fatalError("RemoveReactionUseCase not resolved")
+            }
+            
+            return BoardViewModel(
+                getAllQuestionsUseCase: getAllQuestionsUseCase,
+                getAllPostsUseCase: getAllPostsUseCase,
+                addReactionUseCase: addReactionUseCase,
+                removeReactionUseCase: removeReactionUseCase
+            )
         }
     }
 }
