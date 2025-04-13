@@ -29,11 +29,17 @@ struct BoardView: View {
                         } heartButtonTapped: { postId, isLiked in
                             viewModel.heartButtonTapped(postId: postId, isLiked: isLiked)
                         }
+                        .onTapGesture {
+                            viewModel.cardViewTapped(post: myPost)
+                        }
                     }
                     
                     ForEach(viewModel.posts, id: \.id) { post in
                         CardView(post: post, editButtonTapped: nil) { postId, isLiked in
                             viewModel.heartButtonTapped(postId: postId, isLiked: isLiked)
+                        }
+                        .onTapGesture {
+                            viewModel.cardViewTapped(post: post)
                         }
                     }
                 }
@@ -48,6 +54,11 @@ struct BoardView: View {
             Button("수정", role: .none) {}
             Button("삭제", role: .destructive) {}
             Button("취소", role: .cancel) {}
+        }
+        .sheet(isPresented: $viewModel.showingDetailsSheet) {
+            DetailView(post: $viewModel.selectedPost)
+                .presentationDetents([.fraction(0.7)])
+                .presentationDragIndicator(.visible)
         }
     }
     
