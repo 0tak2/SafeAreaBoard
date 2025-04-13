@@ -21,19 +21,10 @@ struct GetCurrentUserUseCase: GetCurrentUserUseCaseProtocol {
     }
     
     func execute(command: ()) async throws -> Auth.User? {
-        let task = Task {
-            do {
-                return try await authService.getCurrentUser()
-            } catch {
-                log.error("authService error. \(error.localizedDescription)")
-                throw DomainError.dataLayerError(error.localizedDescription)
-            }
-        }
-        
-        let result = await task.result
         do {
-            return try result.get()
+            return try await authService.getCurrentUser()
         } catch {
+            log.error("authService error. \(error.localizedDescription)")
             throw DomainError.dataLayerError(error.localizedDescription)
         }
     }
