@@ -26,7 +26,8 @@ struct AppView: View {
                         SetPreferenceView(viewModel: viewModel)
                     } else {
                         let tabRouter = container.resolve(TabRouter.self)!
-                        MainTabView(tabRouter: tabRouter)
+                        let boardViewModel = container.resolve(BoardViewModel.self)!
+                        MainTabView(tabRouter: tabRouter, boardViewModel: boardViewModel)
                     }
                 }
             }

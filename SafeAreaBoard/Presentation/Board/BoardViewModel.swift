@@ -52,7 +52,9 @@ final class BoardViewModel: ObservableObject {
             
             await MainActor.run {
                 self.questions = questions
-                self.selectedQuestion = questions.first
+                if selectedQuestion == nil {
+                    self.selectedQuestion = questions.first
+                }
             }
         } catch {
             await MainActor.run {
