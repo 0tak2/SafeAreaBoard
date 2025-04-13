@@ -12,6 +12,7 @@ struct Reaction: Decodable {
     let type: String?
     let createdAt: Date?
     let profileId: UUID?
+    let profile: Profile?
     let postId: Int?
     
     enum CodingKeys: String, CodingKey {
@@ -19,6 +20,7 @@ struct Reaction: Decodable {
         case type
         case createdAt = "created_at"
         case profileId = "profile_id"
+        case profile = "profiles"
         case postId = "post_id"
     }
 }

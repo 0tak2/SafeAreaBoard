@@ -19,7 +19,7 @@ final class PostRepository: PostRepositoryProtocol {
     func getAll(questionId: Int) async throws -> [Post] {
         let posts: [Post] = try await supabaseClient
             .from(tableName)
-            .select("*, profiles(*), reactions(*)")
+            .select("*, profiles(*), reactions(*, profiles(*))")
             .eq("question_id", value: questionId)
             .eq("is_deleted", value: false)
             .eq("is_hidden", value: false)
@@ -33,7 +33,7 @@ final class PostRepository: PostRepositoryProtocol {
     func getOne(postId: Int) async throws -> Post? {
         let post: Post = try await supabaseClient
             .from(tableName)
-            .select("*, profiles(*), reactions(*)")
+            .select("*, profiles(*), reactions(*, profiles(*))")
             .eq("id", value: postId)
             .eq("is_deleted", value: false)
             .eq("is_hidden", value: false)
