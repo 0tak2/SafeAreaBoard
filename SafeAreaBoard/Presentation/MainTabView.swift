@@ -12,10 +12,12 @@ struct MainTabView: View {
     @EnvironmentObject var container: DIContainerEnvironment
     
     private var boardViewModel: BoardViewModel
+    private var writeViewModel: WriteViewModel
     
-    init(tabRouter: TabRouter, boardViewModel: BoardViewModel) {
+    init(tabRouter: TabRouter, boardViewModel: BoardViewModel, writeViewModel: WriteViewModel) {
         self._tabRouter = StateObject(wrappedValue: tabRouter)
         self.boardViewModel = boardViewModel
+        self.writeViewModel = writeViewModel
     }
     
     var body: some View {
@@ -24,8 +26,10 @@ struct MainTabView: View {
                 BoardView(viewModel: boardViewModel)
             }
             
-            Tab("작성", systemImage: "bubble.and.pencil", value: .new) {
-                WriteView()
+            Tab("작성", systemImage: "bubble.and.pencil", value: .edit) {
+                NavigationStack {
+                    WriteView(viewModel: writeViewModel)
+                }
             }
             
             Tab("설정", systemImage: "gearshape", value: .setting) {
@@ -33,5 +37,9 @@ struct MainTabView: View {
             }
         }
         .tint(CustomColors.primaryDarker2)
+        .onAppear() { // FIXME: is it best?
+            boardViewModel.tabRouter = self.tabRouter
+            writeViewModel.tabRouter = self.tabRouter
+        }
     }
 }

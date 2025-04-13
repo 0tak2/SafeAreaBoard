@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BoardView: View {
     @StateObject private var viewModel: BoardViewModel
+    @EnvironmentObject private var container: DIContainerEnvironment
     
     init(viewModel: BoardViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -17,9 +18,6 @@ struct BoardView: View {
     var body: some View {
         VStack(spacing: 0) {
             headerView
-            
-            Spacer()
-                .frame(height: 32)
             
             ScrollView(showsIndicators: false) {
                 if viewModel.myPost == nil,
@@ -50,14 +48,16 @@ struct BoardView: View {
                     }
                 }
             }
+            .padding(16)
         }
-        .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .task {
             await viewModel.taskDidStart()
         }
         .confirmationDialog("편집 메뉴", isPresented: $viewModel.showingEditSheet) {
-            Button("수정", role: .none) {}
+            Button("수정", role: .none) {
+                viewModel.editButtonTapped()
+            }
             Button("삭제", role: .destructive) {}
             Button("취소", role: .cancel) {}
         }
@@ -97,12 +97,17 @@ struct BoardView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             if viewModel.showingQuestionList {
-                QuestionListView(questionList: $viewModel.questions) { question in
-                    viewModel.questionTapped(question)
+                ScrollView {
+                    QuestionListView(questionList: $viewModel.questions) { question in
+                        viewModel.questionTapped(question)
+                    }
                 }
+                .frame(maxHeight: 200)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(viewModel.showingQuestionList ? CustomColors.primaryLighter : Color.clear)
     }
 }
 
@@ -110,5 +115,24 @@ struct BoardView: View {
     let authService = AuthService(supabaseClient: SupabaseProvider.shared.supabase)
     let reactionRepoitory = ReactionRepository(supabaseClient: SupabaseProvider.shared.supabase)
     
-    BoardView(viewModel: BoardViewModel(getAllQuestionsUseCase: GetAllQuestionsUseCase(questionRepository: QuestionRepository(supabaseClient: SupabaseProvider.shared.supabase), postRespository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase), authService: authService), getAllPostsUseCase: GetAllPostsUseCase(postRepository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase), authService: authService), addReactionUseCase: AddReactionUseCase(reactionRepository: reactionRepoitory, authService: authService), removeReactionUseCase: RemoveReactionUseCase(reactionRepository: reactionRepoitory, authService: authService)))
+    BoardView(viewModel: BoardViewModel(
+        getAllQuestionsUseCase: GetAllQuestionsUseCase(
+            questionRepository: QuestionRepository(supabaseClient: SupabaseProvider.shared.supabase),
+            postRespository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase),
+            authService: authService
+        ),
+        getAllPostsUseCase: GetAllPostsUseCase(
+            postRepository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase),
+            authService: authService
+        ),
+        addReactionUseCase: AddReactionUseCase(
+            reactionRepository: reactionRepoitory,
+            authService: authService
+        ),
+        removeReactionUseCase: RemoveReactionUseCase(
+            reactionRepository: reactionRepoitory,
+            authService: authService
+        ),
+        updateLastQuestionIdUseCase: UpdateLastQuestionIdUseCase(userDefaultsRepository: UserDefaultsRepository())
+    ))
 }

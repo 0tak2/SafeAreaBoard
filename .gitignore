@@ -38,3 +38,4 @@ Debug.xcconfig
 **/supabase/.branches
 **/supabase/.temp
 
+xcuserdata/

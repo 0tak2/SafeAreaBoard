@@ -10,7 +10,7 @@ import Foundation
 final class TabRouter: ObservableObject {
     enum Tab: Hashable {
         case board
-        case new
+        case edit
         case setting
     }
     
