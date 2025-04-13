@@ -185,6 +185,18 @@ final class DIContainerProvider {
             
             return GetLastQuestionIdUseCase(userDefaultsRepository: userDefaultsRepository)
         }
+        
+        container.register((any UpdatePostUseCaseProtocol).self) { r in
+            guard let postRepository = r.resolve(PostRepositoryProtocol.self) else {
+                fatalError("ReactionRepository not resolved")
+            }
+            
+            guard let authService = r.resolve(AuthServiceProtocol.self) else {
+                fatalError("AuthService not resolved")
+            }
+            
+            return UpdatePostUseCase(postRepository: postRepository, authService: authService)
+        }
     }
     
     private func registerPresentationLayer() {
@@ -264,11 +276,16 @@ final class DIContainerProvider {
                 fatalError("addPostUseCase not resolved")
             }
             
+            guard let updatePostUseCase = r.resolve((any UpdatePostUseCaseProtocol).self) else {
+                fatalError("addPostUseCase not resolved")
+            }
+            
             return WriteViewModel(
                 getAllQuestionsUseCase: getAllQuestionsUseCase,
                 addPostUseCase: addPostUseCase,
                 getMyQuestionUseCase: getMyQuestionUseCase,
-                getLastQuestionIdUseCase: getLastQuestionIdUseCase
+                getLastQuestionIdUseCase: getLastQuestionIdUseCase,
+                updatePostUseCase: updatePostUseCase
             )
         }
     }

@@ -22,6 +22,7 @@ final class WriteViewModel: ObservableObject {
     private let addPostUseCase: any AddPostUseCaseProtocol
     private let getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol
     private let getLastQuestionIdUseCase: any GetLastQuestionIdUseCaseProtocol
+    private let updatePostUseCase: any UpdatePostUseCaseProtocol
     var tabRouter: TabRouter?
     
     private let log = Logger.of("WriteViewModel")
@@ -30,12 +31,14 @@ final class WriteViewModel: ObservableObject {
         getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol,
         addPostUseCase: any AddPostUseCaseProtocol,
         getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol,
-        getLastQuestionIdUseCase: any GetLastQuestionIdUseCaseProtocol
+        getLastQuestionIdUseCase: any GetLastQuestionIdUseCaseProtocol,
+        updatePostUseCase: any UpdatePostUseCaseProtocol
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.addPostUseCase = addPostUseCase
         self.getMyQuestionUseCase = getMyQuestionUseCase
         self.getLastQuestionIdUseCase = getLastQuestionIdUseCase
+        self.updatePostUseCase = updatePostUseCase
     }
     
     func taskDidStart() async {
@@ -99,15 +102,27 @@ final class WriteViewModel: ObservableObject {
     
     private func savePost() async {
         do {
-            let _ = try await addPostUseCase.execute(command: UpdatePostParams(
-                content: editingContent,
-                createdAt: previousCreatedAt ?? Date(),
-                updatedAt: Date(),
-                profileId: nil,
-                questionId: selectedQuestion?.questionId,
-                isDeleted: false,
-                isHidden: false
-            ))
+            if isEditMode {
+                let _ = try await updatePostUseCase.execute(command: UpdatePostParams(
+                    content: editingContent,
+                    createdAt: previousCreatedAt ?? Date(),
+                    updatedAt: Date(),
+                    profileId: nil,
+                    questionId: selectedQuestion?.questionId,
+                    isDeleted: false,
+                    isHidden: false
+                ))
+            } else {
+                let _ = try await addPostUseCase.execute(command: UpdatePostParams(
+                    content: editingContent,
+                    createdAt: Date(),
+                    updatedAt: Date(),
+                    profileId: nil,
+                    questionId: selectedQuestion?.questionId,
+                    isDeleted: false,
+                    isHidden: false
+                ))
+            }
             
             await MainActor.run {
                 editingContent = ""

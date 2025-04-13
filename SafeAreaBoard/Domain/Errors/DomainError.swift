@@ -10,6 +10,7 @@ import Foundation
 enum DomainError: LocalizedError {
     case dataLayerError(String)
     case invalidSession(String)
+    case notFoundError(String)
     
     var errorDescription: String? {
         switch self {
@@ -17,6 +18,8 @@ enum DomainError: LocalizedError {
             return "Data Layer Error: \(message)"
         case .invalidSession(let message):
             return "Invalid Session: \(message)"
+        case .notFoundError(let message):
+            return "Not Found: \(message)"
         }
     }
 }

@@ -112,7 +112,11 @@ struct WriteView: View {
                 postRespository: postRepository,
                 authService: authService
             ),
-            getLastQuestionIdUseCase: GetLastQuestionIdUseCase(userDefaultsRepository: UserDefaultsRepository())
+            getLastQuestionIdUseCase: GetLastQuestionIdUseCase(userDefaultsRepository: UserDefaultsRepository()),
+            updatePostUseCase: UpdatePostUseCase(
+                postRepository: postRepository,
+                authService: authService
+            )
         )
     )
 }
