@@ -19,10 +19,17 @@ struct WriteView: View {
             headerView
             
             TextEditor(text: $viewModel.editingContent)
+                .overlay(alignment: .topLeading, content: {
+                    if viewModel.editingContent.isEmpty {
+                        Text("여기에 경험을 공유해주세요.")
+                            .font(.body)
+                            .padding(6)
+                    }
+                })
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .navigationTitle("새로운 경험")
+        .navigationTitle(viewModel.isEditMode ? "수정하기" : "새로운 경험")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button {
@@ -99,6 +106,10 @@ struct WriteView: View {
             ),
             addPostUseCase: AddPostUseCase(
                 postRepository: postRepository,
+                authService: authService
+            ),
+            getMyQuestionUseCase: GetMyQuestionUseCase(
+                postRespository: postRepository,
                 authService: authService
             )
         )

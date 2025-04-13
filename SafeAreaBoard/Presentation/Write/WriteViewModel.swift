@@ -12,22 +12,27 @@ final class WriteViewModel: ObservableObject {
     @Published var questions: [QuestionWithAnswerStatus] = []
     @Published var selectedQuestion: QuestionWithAnswerStatus?
     @Published var editingContent: String = ""
+    @Published var previousCreatedAt: Date?
     @Published var isError: Bool = false
     @Published var showingQuestionList: Bool = false
     @Published var showingAlert: Bool = false
+    @Published var isEditMode: Bool = false
     
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let addPostUseCase: any AddPostUseCaseProtocol
+    private let getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol
     var tabRouter: TabRouter?
     
     private let log = Logger.of("WriteViewModel")
     
     init(
         getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol,
-        addPostUseCase: any AddPostUseCaseProtocol
+        addPostUseCase: any AddPostUseCaseProtocol,
+        getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.addPostUseCase = addPostUseCase
+        self.getMyQuestionUseCase = getMyQuestionUseCase
     }
     
     func taskDidStart() async {
@@ -39,10 +44,29 @@ final class WriteViewModel: ObservableObject {
             let questions = try await getAllQuestionsUseCase.execute(command: ())
             log.info("fetch questions completed. \(questions)")
             
+            // can two tasks below be integrated?
             await MainActor.run {
                 self.questions = questions
+                
                 if selectedQuestion == nil {
-                    self.selectedQuestion = questions.first
+                    selectedQuestion = questions.first
+                }
+            }
+            
+            if let didAnswer = selectedQuestion?.didAnswer,
+               didAnswer,
+               let questionId = selectedQuestion?.questionId {
+                let post = try await getMyQuestionUseCase.execute(command: questionId)
+                await MainActor.run {
+                    isEditMode = didAnswer
+                    editingContent = post?.content ?? ""
+                    previousCreatedAt = post?.createdAt
+                }
+            } else {
+                await MainActor.run {
+                    isEditMode = false
+                    editingContent = ""
+                    previousCreatedAt = nil
                 }
             }
         } catch {
@@ -67,7 +91,7 @@ final class WriteViewModel: ObservableObject {
         do {
             let _ = try await addPostUseCase.execute(command: UpdatePostParams(
                 content: editingContent,
-                createdAt: Date(),
+                createdAt: previousCreatedAt ?? Date(),
                 updatedAt: Date(),
                 profileId: nil,
                 questionId: selectedQuestion?.questionId,
@@ -92,5 +116,8 @@ final class WriteViewModel: ObservableObject {
     
     func questionTapped(_ question: QuestionWithAnswerStatus) {
         selectedQuestion = question
+        Task {
+            await fetchQuestions()
+        }
     }
 }
