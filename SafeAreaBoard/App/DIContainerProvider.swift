@@ -28,6 +28,12 @@ final class DIContainerProvider {
         
         container.register(ProfileRepositoryProtocol.self) { _ in ProfileRepository(supabaseClient: SupabaseProvider.shared.supabase)}
             .inObjectScope(.container)
+        
+        container.register(QuestionRepositoryProtocol.self) { _ in QuestionRepository(supabaseClient: SupabaseProvider.shared.supabase)}
+            .inObjectScope(.container)
+        
+        container.register(PostRepositoryProtocol.self) { _ in PostRepository(supabaseClient: SupabaseProvider.shared.supabase)}
+            .inObjectScope(.container)
     }
     
     private func registerDomainLayer() {
@@ -79,6 +85,26 @@ final class DIContainerProvider {
             
             return UpdateProfileUseCase(profileRepository: profileRepository)
         }
+        
+        container.register((any GetAllQuestionsUseCaseProtocol).self) { r in
+            guard let questionRepository = r.resolve(QuestionRepositoryProtocol.self) else {
+                fatalError("QuestionRepository not resolved")
+            }
+            
+            return GetAllQuestionsUseCase(questionRepository: questionRepository)
+        }
+        
+        container.register((any GetAllPostsUseCaseProtocol).self) { r in
+            guard let postRepository = r.resolve(PostRepositoryProtocol.self) else {
+                fatalError("PostRepository not resolved")
+            }
+            
+            guard let authService = r.resolve(AuthServiceProtocol.self) else {
+                fatalError("AuthService not resolved")
+            }
+            
+            return GetAllPostsUseCase(postRepository: postRepository, authService: authService)
+        }
     }
     
     private func registerPresentationLayer() {
@@ -109,6 +135,18 @@ final class DIContainerProvider {
         
         container.register(TabRouter.self) { _ in
             TabRouter()
+        }
+        
+        container.register(BoardViewModel.self) { r in
+            guard let getAllQuestionsUseCase = r.resolve((any GetAllQuestionsUseCaseProtocol).self) else {
+                fatalError("GetAllQuestionsUseCase not resolved")
+            }
+            
+            guard let getAllPostsUseCase = r.resolve((any GetAllPostsUseCaseProtocol).self) else {
+                fatalError("GetAllPostsUseCase not resolved")
+            }
+            
+            return BoardViewModel(getAllQuestionsUseCase: getAllQuestionsUseCase, getAllPostsUseCase: getAllPostsUseCase)
         }
     }
 }
