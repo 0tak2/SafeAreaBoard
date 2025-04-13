@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @StateObject var tabRouter: TabRouter
+    @EnvironmentObject var container: DIContainerEnvironment
     
     init(tabRouter: TabRouter) {
         self._tabRouter = StateObject(wrappedValue: tabRouter)
@@ -17,7 +18,8 @@ struct MainTabView: View {
     var body: some View {
         TabView(selection: $tabRouter.currentTab) {
             Tab("보드", systemImage: "square.stack", value: .board) {
-                BoardView()
+                let viewModel = container.resolve(BoardViewModel.self)!
+                BoardView(viewModel: viewModel)
             }
             
             Tab("작성", systemImage: "bubble.and.pencil", value: .new) {
