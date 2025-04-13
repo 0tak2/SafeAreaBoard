@@ -111,7 +111,8 @@ struct WriteView: View {
             getMyQuestionUseCase: GetMyQuestionUseCase(
                 postRespository: postRepository,
                 authService: authService
-            )
+            ),
+            getLastQuestionIdUseCase: GetLastQuestionIdUseCase(userDefaultsRepository: UserDefaultsRepository())
         )
     )
 }

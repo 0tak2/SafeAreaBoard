@@ -21,6 +21,7 @@ final class WriteViewModel: ObservableObject {
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let addPostUseCase: any AddPostUseCaseProtocol
     private let getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol
+    private let getLastQuestionIdUseCase: any GetLastQuestionIdUseCaseProtocol
     var tabRouter: TabRouter?
     
     private let log = Logger.of("WriteViewModel")
@@ -28,25 +29,34 @@ final class WriteViewModel: ObservableObject {
     init(
         getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol,
         addPostUseCase: any AddPostUseCaseProtocol,
-        getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol
+        getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol,
+        getLastQuestionIdUseCase: any GetLastQuestionIdUseCaseProtocol
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.addPostUseCase = addPostUseCase
         self.getMyQuestionUseCase = getMyQuestionUseCase
+        self.getLastQuestionIdUseCase = getLastQuestionIdUseCase
     }
     
     func taskDidStart() async {
         await fetchQuestions()
     }
     
-    func fetchQuestions() async {
+    func fetchQuestions(isPreferUserDefaults: Bool = true) async {
         do {
+            let lastQuestionIdOrNil = try getLastQuestionIdUseCase.execute(command: ())
+            
             let questions = try await getAllQuestionsUseCase.execute(command: ())
             log.info("fetch questions completed. \(questions)")
             
             // can two tasks below be integrated?
             await MainActor.run {
                 self.questions = questions
+                
+                if isPreferUserDefaults, // userDefaults에 저장된 최근 질문이 우선한다
+                   let lastQuestionId = lastQuestionIdOrNil {
+                    selectedQuestion = questions.first(where: { $0.questionId == lastQuestionId })
+                }
                 
                 if selectedQuestion == nil {
                     selectedQuestion = questions.first
@@ -117,7 +127,7 @@ final class WriteViewModel: ObservableObject {
     func questionTapped(_ question: QuestionWithAnswerStatus) {
         selectedQuestion = question
         Task {
-            await fetchQuestions()
+            await fetchQuestions(isPreferUserDefaults: false)
         }
     }
 }

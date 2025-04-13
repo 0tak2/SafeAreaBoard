@@ -37,6 +37,9 @@ final class DIContainerProvider {
         
         container.register(ReactionRepositoryProtocol.self) { _ in ReactionRepository(supabaseClient: SupabaseProvider.shared.supabase)}
             .inObjectScope(.container)
+        
+        container.register(UserDefaultsRepositoryProtocol.self) { _ in UserDefaultsRepository() }
+            .inObjectScope(.container)
     }
     
     private func registerDomainLayer() {
@@ -166,6 +169,22 @@ final class DIContainerProvider {
             
             return GetMyQuestionUseCase(postRespository: postRepository, authService: authService)
         }
+        
+        container.register((any UpdateLastQuestionIdUseCaseProtocol).self) { r in
+            guard let userDefaultsRepository = r.resolve(UserDefaultsRepositoryProtocol.self) else {
+                fatalError("UserDefaultsRepository not resolved")
+            }
+            
+            return UpdateLastQuestionIdUseCase(userDefaultsRepository: userDefaultsRepository)
+        }
+        
+        container.register((any GetLastQuestionIdUseCaseProtocol).self) { r in
+            guard let userDefaultsRepository = r.resolve(UserDefaultsRepositoryProtocol.self) else {
+                fatalError("UserDefaultsRepository not resolved")
+            }
+            
+            return GetLastQuestionIdUseCase(userDefaultsRepository: userDefaultsRepository)
+        }
     }
     
     private func registerPresentationLayer() {
@@ -215,11 +234,16 @@ final class DIContainerProvider {
                 fatalError("RemoveReactionUseCase not resolved")
             }
             
+            guard let updateLastQuestionIdUseCase = r.resolve((any UpdateLastQuestionIdUseCaseProtocol).self) else {
+                fatalError("UpdateLastQuestionIdUseCase not resolved")
+            }
+            
             return BoardViewModel(
                 getAllQuestionsUseCase: getAllQuestionsUseCase,
                 getAllPostsUseCase: getAllPostsUseCase,
                 addReactionUseCase: addReactionUseCase,
-                removeReactionUseCase: removeReactionUseCase
+                removeReactionUseCase: removeReactionUseCase,
+                updateLastQuestionIdUseCase: updateLastQuestionIdUseCase
             )
         }
         
@@ -236,10 +260,15 @@ final class DIContainerProvider {
                 fatalError("addPostUseCase not resolved")
             }
             
+            guard let getLastQuestionIdUseCase = r.resolve((any GetLastQuestionIdUseCaseProtocol).self) else {
+                fatalError("addPostUseCase not resolved")
+            }
+            
             return WriteViewModel(
                 getAllQuestionsUseCase: getAllQuestionsUseCase,
                 addPostUseCase: addPostUseCase,
-                getMyQuestionUseCase: getMyQuestionUseCase
+                getMyQuestionUseCase: getMyQuestionUseCase,
+                getLastQuestionIdUseCase: getLastQuestionIdUseCase
             )
         }
     }

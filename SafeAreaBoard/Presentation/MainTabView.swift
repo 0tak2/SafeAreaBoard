@@ -26,7 +26,7 @@ struct MainTabView: View {
                 BoardView(viewModel: boardViewModel)
             }
             
-            Tab("작성", systemImage: "bubble.and.pencil", value: .new) {
+            Tab("작성", systemImage: "bubble.and.pencil", value: .edit) {
                 NavigationStack {
                     WriteView(viewModel: writeViewModel)
                 }
@@ -38,6 +38,7 @@ struct MainTabView: View {
         }
         .tint(CustomColors.primaryDarker2)
         .onAppear() { // FIXME: is it best?
+            boardViewModel.tabRouter = self.tabRouter
             writeViewModel.tabRouter = self.tabRouter
         }
     }

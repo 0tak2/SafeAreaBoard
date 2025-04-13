@@ -13,3 +13,10 @@ protocol UseCase {
     
     func execute(command: Command) async throws -> Result
 }
+
+protocol SyncUseCase {
+    associatedtype Command
+    associatedtype Result
+    
+    func execute(command: Command) throws -> Result
+}

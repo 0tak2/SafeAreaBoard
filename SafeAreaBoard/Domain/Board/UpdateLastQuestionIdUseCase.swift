@@ -8,7 +8,7 @@
 import Foundation
 import os.log
 
-protocol UpdateLastQuestionIdUseCaseProtocol: UseCase where Command == Int, Result == Void {
+protocol UpdateLastQuestionIdUseCaseProtocol: SyncUseCase where Command == Int, Result == Void {
 }
 
 struct UpdateLastQuestionIdUseCase: UpdateLastQuestionIdUseCaseProtocol {
@@ -22,7 +22,7 @@ struct UpdateLastQuestionIdUseCase: UpdateLastQuestionIdUseCaseProtocol {
     /**
      command:   업데이트할 질문의  id
      */
-    func execute(command: Int) async throws {
+    func execute(command: Int) throws -> () {
         userDefaultsRepository.set(command, forKey: .lastSelectedQuestionId)
     }
 }

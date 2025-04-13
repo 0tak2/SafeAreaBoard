@@ -1,5 +1,5 @@
 //
-//  UpdateLastQuestionIdUseCase.swift
+//  GetLastQuestionIdUseCase.swift
 //  SafeAreaBoard
 //
 //  Created by 임영택 on 4/13/25.
@@ -8,12 +8,12 @@
 import Foundation
 import os.log
 
-protocol UpdateLastQuestionIdUseCaseProtocol: SyncUseCase where Command == Int, Result == Void {
+protocol GetLastQuestionIdUseCaseProtocol: SyncUseCase where Command == Void, Result == Int? {
 }
 
-struct UpdateLastQuestionIdUseCase: UpdateLastQuestionIdUseCaseProtocol {
+struct GetLastQuestionIdUseCase: GetLastQuestionIdUseCaseProtocol {
     private let userDefaultsRepository: UserDefaultsRepositoryProtocol
-    private let log = Logger.of("UpdateLastQuestionIdUseCase")
+    private let log = Logger.of("GetLastQuestionIdUseCase")
     
     init(userDefaultsRepository: UserDefaultsRepositoryProtocol) {
         self.userDefaultsRepository = userDefaultsRepository
@@ -22,7 +22,7 @@ struct UpdateLastQuestionIdUseCase: UpdateLastQuestionIdUseCaseProtocol {
     /**
      command:   업데이트할 질문의  id
      */
-    func execute(command: Int) throws -> () {
-        userDefaultsRepository.set(command, forKey: .lastSelectedQuestionId)
+    func execute(command: ()) throws -> Int? {
+        return userDefaultsRepository.get(key: .lastSelectedQuestionId)
     }
 }
