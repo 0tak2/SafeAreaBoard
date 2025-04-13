@@ -94,7 +94,17 @@ final class DIContainerProvider {
                 fatalError("QuestionRepository not resolved")
             }
             
-            return GetAllQuestionsUseCase(questionRepository: questionRepository)
+            guard let postRepository = r.resolve(PostRepositoryProtocol.self) else {
+                fatalError("ProfileRepository not resolved")
+            }
+            
+            guard let authService = r.resolve(AuthServiceProtocol.self) else {
+                fatalError("AuthService not resolved")
+            }
+            
+            return GetAllQuestionsUseCase(
+                questionRepository: questionRepository, postRespository: postRepository, authService: authService
+            )
         }
         
         container.register((any GetAllPostsUseCaseProtocol).self) { r in

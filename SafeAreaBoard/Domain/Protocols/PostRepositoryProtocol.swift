@@ -10,6 +10,7 @@ import Foundation
 protocol PostRepositoryProtocol {
     func getAll(questionId: Int) async throws -> [Post]
     func getOne(postId: Int) async throws -> Post?
+    func getOne(questionId: Int, profileId: UUID) async throws -> Post?
     func insert(params: UpdatePostParams) async throws -> Post
     func update(postId: Int, params: UpdatePostParams) async throws -> Post
     func delete(postId: Int) async throws

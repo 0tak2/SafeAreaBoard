@@ -9,14 +9,15 @@ import Foundation
 import os.log
 
 final class BoardViewModel: ObservableObject {
-    @Published var questions: [Question] = []
-    @Published var selectedQuestion: Question?
+    @Published var questions: [QuestionWithAnswerStatus] = []
+    @Published var selectedQuestion: QuestionWithAnswerStatus?
     @Published var selectedPost: PostWithOwnership?
     @Published var myPost: PostWithOwnership?
     @Published var posts: [PostWithOwnership] = []
     @Published var isError: Bool = false
     @Published var showingEditSheet: Bool = false
     @Published var showingDetailsSheet: Bool = false
+    @Published var showingQuestionList: Bool = false
     
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let getAllPostsUseCase: any GetAllPostsUseCaseProtocol
@@ -135,5 +136,22 @@ final class BoardViewModel: ObservableObject {
     func cardViewTapped(post: PostWithOwnership) {
         selectedPost = post
         showingDetailsSheet = true
+    }
+    
+    func questionListButtonTapped() {
+        showingQuestionList.toggle()
+    }
+    
+    func questionTapped(_ question: QuestionWithAnswerStatus) {
+        selectedQuestion = question
+        Task {
+            await questionChanged()
+        }
+    }
+    
+    func questionChanged() async {
+        if let questionId = selectedQuestion?.questionId {
+            await fetchPosts(questionId: questionId)
+        }
     }
 }

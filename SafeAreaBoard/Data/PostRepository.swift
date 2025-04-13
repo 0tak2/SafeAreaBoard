@@ -44,6 +44,30 @@ final class PostRepository: PostRepositoryProtocol {
         return post
     }
     
+    func getOne(questionId: Int, profileId: UUID) async throws -> Post? {
+        do {
+            let post: Post = try await supabaseClient
+                .from(tableName)
+                .select()
+                .eq("question_id", value: questionId)
+                .eq("profile_id", value: profileId)
+                .eq("is_deleted", value: false)
+                .eq("is_hidden", value: false)
+                .single()
+                .execute()
+                .value
+            
+            return post
+        } catch let error as PostgrestError {
+            if error.code == "PGRST116" {
+                return nil // ignore no rows
+            }
+            throw error
+        } catch {
+            throw error
+        }
+    }
+    
     func insert(params: UpdatePostParams) async throws -> Post {
         let post: Post = try await supabaseClient
             .from(tableName)
