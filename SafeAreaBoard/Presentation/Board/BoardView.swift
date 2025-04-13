@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BoardView: View {
     @StateObject private var viewModel: BoardViewModel
+    @EnvironmentObject private var container: DIContainerEnvironment
     
     init(viewModel: BoardViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -54,7 +55,9 @@ struct BoardView: View {
             await viewModel.taskDidStart()
         }
         .confirmationDialog("편집 메뉴", isPresented: $viewModel.showingEditSheet) {
-            Button("수정", role: .none) {}
+            Button("수정", role: .none) {
+                viewModel.editButtonTapped()
+            }
             Button("삭제", role: .destructive) {}
             Button("취소", role: .cancel) {}
         }
@@ -112,5 +115,24 @@ struct BoardView: View {
     let authService = AuthService(supabaseClient: SupabaseProvider.shared.supabase)
     let reactionRepoitory = ReactionRepository(supabaseClient: SupabaseProvider.shared.supabase)
     
-    BoardView(viewModel: BoardViewModel(getAllQuestionsUseCase: GetAllQuestionsUseCase(questionRepository: QuestionRepository(supabaseClient: SupabaseProvider.shared.supabase), postRespository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase), authService: authService), getAllPostsUseCase: GetAllPostsUseCase(postRepository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase), authService: authService), addReactionUseCase: AddReactionUseCase(reactionRepository: reactionRepoitory, authService: authService), removeReactionUseCase: RemoveReactionUseCase(reactionRepository: reactionRepoitory, authService: authService)))
+    BoardView(viewModel: BoardViewModel(
+        getAllQuestionsUseCase: GetAllQuestionsUseCase(
+            questionRepository: QuestionRepository(supabaseClient: SupabaseProvider.shared.supabase),
+            postRespository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase),
+            authService: authService
+        ),
+        getAllPostsUseCase: GetAllPostsUseCase(
+            postRepository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase),
+            authService: authService
+        ),
+        addReactionUseCase: AddReactionUseCase(
+            reactionRepository: reactionRepoitory,
+            authService: authService
+        ),
+        removeReactionUseCase: RemoveReactionUseCase(
+            reactionRepository: reactionRepoitory,
+            authService: authService
+        ),
+        updateLastQuestionIdUseCase: UpdateLastQuestionIdUseCase(userDefaultsRepository: UserDefaultsRepository())
+    ))
 }
