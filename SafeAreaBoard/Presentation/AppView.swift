@@ -27,7 +27,8 @@ struct AppView: View {
                     } else {
                         let tabRouter = container.resolve(TabRouter.self)!
                         let boardViewModel = container.resolve(BoardViewModel.self)!
-                        MainTabView(tabRouter: tabRouter, boardViewModel: boardViewModel)
+                        let writeViewModel = container.resolve(WriteViewModel.self)!
+                        MainTabView(tabRouter: tabRouter, boardViewModel: boardViewModel, writeViewModel: writeViewModel)
                     }
                 }
             }

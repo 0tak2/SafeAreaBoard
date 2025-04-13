@@ -18,9 +18,6 @@ struct BoardView: View {
         VStack(spacing: 0) {
             headerView
             
-            Spacer()
-                .frame(height: 32)
-            
             ScrollView(showsIndicators: false) {
                 if viewModel.myPost == nil,
                    viewModel.posts.isEmpty {
@@ -50,8 +47,8 @@ struct BoardView: View {
                     }
                 }
             }
+            .padding(16)
         }
-        .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .task {
             await viewModel.taskDidStart()
@@ -97,12 +94,17 @@ struct BoardView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             if viewModel.showingQuestionList {
-                QuestionListView(questionList: $viewModel.questions) { question in
-                    viewModel.questionTapped(question)
+                ScrollView {
+                    QuestionListView(questionList: $viewModel.questions) { question in
+                        viewModel.questionTapped(question)
+                    }
                 }
+                .frame(maxHeight: 200)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(viewModel.showingQuestionList ? CustomColors.primaryLighter : Color.clear)
     }
 }
 
