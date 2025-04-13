@@ -16,6 +16,7 @@ struct Post: Decodable {
     let isHidden: Bool?
     let profileId: UUID?
     let questionId: Int?
+    let profile: Profile?
     let reactions: [Reaction]?
     
     enum CodingKeys: String, CodingKey {
@@ -27,6 +28,7 @@ struct Post: Decodable {
         case isHidden = "is_hidden"
         case profileId = "profile_id"
         case questionId = "question_id"
+        case profile = "profiles"
         case reactions
     }
 }

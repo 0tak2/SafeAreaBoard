@@ -8,7 +8,7 @@
 import Foundation
 
 struct Question: Decodable {
-    let id: Int?
+    let questionId: Int?
     let content: String?
     let createdAt: Date?
     let updatedAt: Date?
@@ -17,7 +17,7 @@ struct Question: Decodable {
     let posts: [Post]?
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case questionId = "id"
         case content
         case createdAt = "created_at"
         case updatedAt = "updated_at"
