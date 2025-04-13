@@ -60,11 +60,7 @@ final class BoardViewModel: ObservableObject {
                     self.selectedQuestion = questions.first
                     
                     if let questionId = selectedQuestion?.questionId {
-                        do {
-                            try updateLastQuestionIdUseCaseProtocol.execute(command: questionId)
-                        } catch {
-                            log.error("UserDefaults update error: \(error)")
-                        }
+                        updateLastQuestionId(questionId)
                     }
                 }
             }
@@ -72,6 +68,14 @@ final class BoardViewModel: ObservableObject {
             await MainActor.run {
                 isError = true
             }
+        }
+    }
+    
+    private func updateLastQuestionId(_ questionId: Int) {
+        do {
+            try updateLastQuestionIdUseCaseProtocol.execute(command: questionId)
+        } catch {
+            log.error("UserDefaults update error: \(error)")
         }
     }
     
@@ -165,6 +169,7 @@ final class BoardViewModel: ObservableObject {
     func questionChanged() async {
         if let questionId = selectedQuestion?.questionId {
             await fetchPosts(questionId: questionId)
+            updateLastQuestionId(questionId)
         }
     }
     
