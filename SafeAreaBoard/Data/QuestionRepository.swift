@@ -20,6 +20,9 @@ final class QuestionRepository: QuestionRepositoryProtocol {
         let questions: [Question] = try await supabaseClient
             .from(tableName)
             .select()
+            .eq("is_hidden", value: false)
+            .eq("is_deleted", value: false)
+            .order("id", ascending: false)
             .execute()
             .value
         
