@@ -14,7 +14,6 @@ final class WriteViewModel: ObservableObject {
     @Published var editingContent: String = ""
     @Published var previousCreatedAt: Date?
     @Published var isError: Bool = false
-    @Published var showingQuestionList: Bool = false
     @Published var showingAlert: Bool = false
     @Published var isEditMode: Bool = false
     
@@ -123,10 +122,6 @@ final class WriteViewModel: ObservableObject {
             log.error("save post failed. \(error)")
             isError = true
         }
-    }
-    
-    func questionListButtonTapped() {
-        showingQuestionList.toggle()
     }
     
     func questionTapped(_ question: QuestionWithAnswerStatus) {
