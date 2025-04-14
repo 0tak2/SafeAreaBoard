@@ -25,9 +25,8 @@ struct AppView: View {
                     if viewModel.isSignedIn && viewModel.nicknameSettingNeeded {
                         SetPreferenceView(viewModel: viewModel)
                     } else {
-                        let tabRouter = container.resolve(TabRouter.self)!
-                        let boardViewModel = container.resolve(BoardViewModel.self)!
-                        MainTabView(tabRouter: tabRouter, boardViewModel: boardViewModel)
+                        let boardViewModel = container.resolve(BoardViewModel.self)! // FIXME: should think about the way of injecting
+                        MainTabView(boardViewModel: boardViewModel)
                     }
                 }
             }

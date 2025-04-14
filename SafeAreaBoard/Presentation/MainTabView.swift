@@ -8,22 +8,19 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @StateObject var tabRouter: TabRouter
-    
     private var boardViewModel: BoardViewModel
     
-    init(tabRouter: TabRouter, boardViewModel: BoardViewModel) {
-        self._tabRouter = StateObject(wrappedValue: tabRouter)
+    init(boardViewModel: BoardViewModel) {
         self.boardViewModel = boardViewModel
     }
     
     var body: some View {
-        TabView(selection: $tabRouter.currentTab) {
-            Tab("보드", systemImage: "square.stack", value: .board) {
+        TabView {
+            Tab("보드", systemImage: "square.stack") {
                 BoardView(viewModel: boardViewModel)
             }
             
-            Tab("설정", systemImage: "gearshape", value: .setting) {
+            Tab("설정", systemImage: "gearshape") {
                 SettingView()
             }
         }
