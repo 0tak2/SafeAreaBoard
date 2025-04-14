@@ -23,7 +23,6 @@ final class BoardViewModel: ObservableObject {
     private let getAllPostsUseCase: any GetAllPostsUseCaseProtocol
     private let addReactionUseCase: any AddReactionUseCaseProtocol
     private let removeReactionUseCase: any RemoveReactionUseCaseProtocol
-    private let updateLastQuestionIdUseCaseProtocol: any UpdateLastQuestionIdUseCaseProtocol
     var tabRouter: TabRouter?
     
     private let log = Logger.of("BoardViewModel")
@@ -32,14 +31,12 @@ final class BoardViewModel: ObservableObject {
         getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol,
         getAllPostsUseCase: any GetAllPostsUseCaseProtocol,
         addReactionUseCase: any AddReactionUseCaseProtocol,
-        removeReactionUseCase: any RemoveReactionUseCaseProtocol,
-        updateLastQuestionIdUseCase: any UpdateLastQuestionIdUseCaseProtocol
+        removeReactionUseCase: any RemoveReactionUseCaseProtocol
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.getAllPostsUseCase = getAllPostsUseCase
         self.addReactionUseCase = addReactionUseCase
         self.removeReactionUseCase = removeReactionUseCase
-        self.updateLastQuestionIdUseCaseProtocol = updateLastQuestionIdUseCase
     }
     
     func taskDidStart() async {
@@ -58,24 +55,12 @@ final class BoardViewModel: ObservableObject {
                 self.questions = questions
                 if selectedQuestion == nil {
                     self.selectedQuestion = questions.first
-                    
-                    if let questionId = selectedQuestion?.questionId {
-                        updateLastQuestionId(questionId)
-                    }
                 }
             }
         } catch {
             await MainActor.run {
                 isError = true
             }
-        }
-    }
-    
-    private func updateLastQuestionId(_ questionId: Int) {
-        do {
-            try updateLastQuestionIdUseCaseProtocol.execute(command: questionId)
-        } catch {
-            log.error("UserDefaults update error: \(error)")
         }
     }
     
@@ -169,7 +154,6 @@ final class BoardViewModel: ObservableObject {
     func questionChanged() async {
         if let questionId = selectedQuestion?.questionId {
             await fetchPosts(questionId: questionId)
-            updateLastQuestionId(questionId)
         }
     }
     

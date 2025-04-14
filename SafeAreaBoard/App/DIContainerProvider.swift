@@ -246,16 +246,11 @@ final class DIContainerProvider {
                 fatalError("RemoveReactionUseCase not resolved")
             }
             
-            guard let updateLastQuestionIdUseCase = r.resolve((any UpdateLastQuestionIdUseCaseProtocol).self) else {
-                fatalError("UpdateLastQuestionIdUseCase not resolved")
-            }
-            
             return BoardViewModel(
                 getAllQuestionsUseCase: getAllQuestionsUseCase,
                 getAllPostsUseCase: getAllPostsUseCase,
                 addReactionUseCase: addReactionUseCase,
-                removeReactionUseCase: removeReactionUseCase,
-                updateLastQuestionIdUseCase: updateLastQuestionIdUseCase
+                removeReactionUseCase: removeReactionUseCase
             )
         }
         
@@ -272,10 +267,6 @@ final class DIContainerProvider {
                 fatalError("addPostUseCase not resolved")
             }
             
-            guard let getLastQuestionIdUseCase = r.resolve((any GetLastQuestionIdUseCaseProtocol).self) else {
-                fatalError("addPostUseCase not resolved")
-            }
-            
             guard let updatePostUseCase = r.resolve((any UpdatePostUseCaseProtocol).self) else {
                 fatalError("addPostUseCase not resolved")
             }
@@ -284,7 +275,6 @@ final class DIContainerProvider {
                 getAllQuestionsUseCase: getAllQuestionsUseCase,
                 addPostUseCase: addPostUseCase,
                 getMyQuestionUseCase: getMyQuestionUseCase,
-                getLastQuestionIdUseCase: getLastQuestionIdUseCase,
                 updatePostUseCase: updatePostUseCase
             )
         }

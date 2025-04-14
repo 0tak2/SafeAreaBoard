@@ -132,7 +132,6 @@ struct BoardView: View {
         removeReactionUseCase: RemoveReactionUseCase(
             reactionRepository: reactionRepoitory,
             authService: authService
-        ),
-        updateLastQuestionIdUseCase: UpdateLastQuestionIdUseCase(userDefaultsRepository: UserDefaultsRepository())
+        )
     ))
 }
