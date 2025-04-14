@@ -82,9 +82,18 @@ struct BoardContentView: View {
             Button("수정", role: .none) {
                 viewModel.editButtonTapped()
             }
-            Button("삭제", role: .destructive) {}
+            Button("삭제", role: .destructive) {
+                viewModel.deleteButtonTapped()
+            }
             Button("취소", role: .cancel) {}
         }
+        .alert("정말 삭제하시겠습니까?", isPresented: $viewModel.showingDeleteConfirmAlert, actions: {
+            Button("삭제", role: .destructive) {
+                viewModel.deletePostConfirmed()
+            }
+            Button("취소", role: .cancel) {
+            }
+        })
         .sheet(isPresented: $viewModel.showingDetailsSheet) {
             DetailView(post: $viewModel.selectedPost)
                 .presentationDetents([.fraction(0.7)])
@@ -138,6 +147,7 @@ struct BoardContentView: View {
 
 #Preview {
     let authService = AuthService(supabaseClient: SupabaseProvider.shared.supabase)
+    let postRepository = PostRepository(supabaseClient: SupabaseProvider.shared.supabase)
     let reactionRepoitory = ReactionRepository(supabaseClient: SupabaseProvider.shared.supabase)
     
     BoardContainerView(viewModel: BoardViewModel(
@@ -147,7 +157,7 @@ struct BoardContentView: View {
             authService: authService
         ),
         getAllPostsUseCase: GetAllPostsUseCase(
-            postRepository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase),
+            postRepository: postRepository,
             authService: authService
         ),
         addReactionUseCase: AddReactionUseCase(
@@ -156,6 +166,10 @@ struct BoardContentView: View {
         ),
         removeReactionUseCase: RemoveReactionUseCase(
             reactionRepository: reactionRepoitory,
+            authService: authService
+        ),
+        removePostUseCase: RemovePostUseCase(
+            postRepository: postRepository,
             authService: authService
         )
     ), navigationRouter: BoardNavigationRouter())
