@@ -9,10 +9,10 @@ import Foundation
 import Supabase
 import os.log
 
-protocol GetMyQuestionUseCaseProtocol: UseCase where Command == Int, Result == Post? {
+protocol GetMyPostUseCaseProtocol: UseCase where Command == Int, Result == Post? {
 }
 
-struct GetMyQuestionUseCase: GetMyQuestionUseCaseProtocol {
+struct GetMyPostUseCase: GetMyPostUseCaseProtocol {
     private let postRespository: PostRepositoryProtocol
     private let authService: AuthServiceProtocol
     private let log = Logger.of("GetMyQuestionUseCase")

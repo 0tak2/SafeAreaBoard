@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Reaction: Decodable {
+struct Reaction: Decodable, Hashable {
     let id: Int?
     let type: String?
     let createdAt: Date?

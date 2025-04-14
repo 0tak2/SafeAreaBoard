@@ -39,10 +39,6 @@ struct WriteView: View {
             }
             .foregroundStyle(CustomColors.primaryDarker2)
         }
-        .animation(.spring, value: viewModel.showingQuestionList)
-        .task {
-            await viewModel.taskDidStart()
-        }
         .alert("내용을 입력해주세요.", isPresented: $viewModel.showingAlert) { }
     }
     
@@ -59,36 +55,16 @@ struct WriteView: View {
                 
                 Spacer()
                 
-                Button {
-                     viewModel.questionListButtonTapped()
-                } label: {
-                    Image(systemName: "chevron.down")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 28)
-                }
-                .foregroundStyle(CustomColors.primary)
-                
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
             Rectangle()
                 .frame(height: 1)
                 .foregroundStyle(CustomColors.warmGray)
-            
-            if viewModel.showingQuestionList {
-                ScrollView {
-                    QuestionListView(questionList: $viewModel.questions) { question in
-                        viewModel.questionTapped(question)
-                    }
-                }
-                .frame(maxHeight: 200)
-            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 16)
         .padding(.horizontal, 16)
-        .background(viewModel.showingQuestionList ? CustomColors.primaryLighter : Color.clear)
     }
 }
 
@@ -99,20 +75,10 @@ struct WriteView: View {
     
     WriteView(
         viewModel: WriteViewModel(
-            getAllQuestionsUseCase: GetAllQuestionsUseCase(
-                questionRepository: QuestionRepository(supabaseClient: supabseClient),
-                postRespository: postRepository,
-                authService: authService
-            ),
             addPostUseCase: AddPostUseCase(
                 postRepository: postRepository,
                 authService: authService
             ),
-            getMyQuestionUseCase: GetMyQuestionUseCase(
-                postRespository: postRepository,
-                authService: authService
-            ),
-            getLastQuestionIdUseCase: GetLastQuestionIdUseCase(userDefaultsRepository: UserDefaultsRepository()),
             updatePostUseCase: UpdatePostUseCase(
                 postRepository: postRepository,
                 authService: authService

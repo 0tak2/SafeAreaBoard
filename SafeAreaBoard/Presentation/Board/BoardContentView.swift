@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BoardView: View {
+struct BoardContentView: View {
     @StateObject private var viewModel: BoardViewModel
     @EnvironmentObject private var container: DIContainerEnvironment
     
@@ -20,10 +20,34 @@ struct BoardView: View {
             headerView
             
             ScrollView(showsIndicators: false) {
+                if viewModel.myPost == nil {
+                    HStack {
+                        Button {
+                            viewModel.writeButtonTapped()
+                        } label: {
+                            Text("작성")
+                                .font(.footnote)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.black)
+                                .padding(.init(top: 4, leading: 16, bottom: 4, trailing: 16))
+                                .background(
+                                    Capsule(style: .continuous)
+                                        .fill(CustomColors.primary)
+                                )
+                        }
+                        
+                        Spacer()
+                    }
+                    
+                    Spacer()
+                        .frame(height: 16)
+                }
+                
                 if viewModel.myPost == nil,
                    viewModel.posts.isEmpty {
-                    Text("아직 등록된 경험이 없습니다. 하단의 작성을 눌러 경험을 공유해보세요.")
+                    Text("아직 등록된 경험이 없습니다. 작성 버튼을 눌러 경험을 공유해보세요.")
                         .font(.headline)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 
                 LazyVStack(spacing: 24) {
@@ -106,7 +130,8 @@ struct BoardView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
+        .padding(.horizontal, 16)
+        .padding(.top, 16)
         .background(viewModel.showingQuestionList ? CustomColors.primaryLighter : Color.clear)
     }
 }
@@ -115,7 +140,7 @@ struct BoardView: View {
     let authService = AuthService(supabaseClient: SupabaseProvider.shared.supabase)
     let reactionRepoitory = ReactionRepository(supabaseClient: SupabaseProvider.shared.supabase)
     
-    BoardView(viewModel: BoardViewModel(
+    BoardContainerView(viewModel: BoardViewModel(
         getAllQuestionsUseCase: GetAllQuestionsUseCase(
             questionRepository: QuestionRepository(supabaseClient: SupabaseProvider.shared.supabase),
             postRespository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase),
@@ -132,7 +157,6 @@ struct BoardView: View {
         removeReactionUseCase: RemoveReactionUseCase(
             reactionRepository: reactionRepoitory,
             authService: authService
-        ),
-        updateLastQuestionIdUseCase: UpdateLastQuestionIdUseCase(userDefaultsRepository: UserDefaultsRepository())
-    ))
+        )
+    ), navigationRouter: BoardNavigationRouter())
 }

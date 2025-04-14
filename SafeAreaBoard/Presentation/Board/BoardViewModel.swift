@@ -18,13 +18,12 @@ final class BoardViewModel: ObservableObject {
     @Published var showingEditSheet: Bool = false
     @Published var showingDetailsSheet: Bool = false
     @Published var showingQuestionList: Bool = false
+    @Published var navigationRouter: BoardNavigationRouter
     
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let getAllPostsUseCase: any GetAllPostsUseCaseProtocol
     private let addReactionUseCase: any AddReactionUseCaseProtocol
     private let removeReactionUseCase: any RemoveReactionUseCaseProtocol
-    private let updateLastQuestionIdUseCaseProtocol: any UpdateLastQuestionIdUseCaseProtocol
-    var tabRouter: TabRouter?
     
     private let log = Logger.of("BoardViewModel")
     
@@ -33,13 +32,13 @@ final class BoardViewModel: ObservableObject {
         getAllPostsUseCase: any GetAllPostsUseCaseProtocol,
         addReactionUseCase: any AddReactionUseCaseProtocol,
         removeReactionUseCase: any RemoveReactionUseCaseProtocol,
-        updateLastQuestionIdUseCase: any UpdateLastQuestionIdUseCaseProtocol
+        navigationRouter: BoardNavigationRouter = BoardNavigationRouter()
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.getAllPostsUseCase = getAllPostsUseCase
         self.addReactionUseCase = addReactionUseCase
         self.removeReactionUseCase = removeReactionUseCase
-        self.updateLastQuestionIdUseCaseProtocol = updateLastQuestionIdUseCase
+        self.navigationRouter = navigationRouter
     }
     
     func taskDidStart() async {
@@ -58,24 +57,12 @@ final class BoardViewModel: ObservableObject {
                 self.questions = questions
                 if selectedQuestion == nil {
                     self.selectedQuestion = questions.first
-                    
-                    if let questionId = selectedQuestion?.questionId {
-                        updateLastQuestionId(questionId)
-                    }
                 }
             }
         } catch {
             await MainActor.run {
                 isError = true
             }
-        }
-    }
-    
-    private func updateLastQuestionId(_ questionId: Int) {
-        do {
-            try updateLastQuestionIdUseCaseProtocol.execute(command: questionId)
-        } catch {
-            log.error("UserDefaults update error: \(error)")
         }
     }
     
@@ -147,7 +134,49 @@ final class BoardViewModel: ObservableObject {
     }
     
     func editButtonTapped() {
-        tabRouter?.currentTab = .edit
+        guard let question = selectedQuestion,
+              let post = myPost else { return }
+        
+        navigationRouter.paths.append(.edit(
+            Question(
+                questionId: question.questionId,
+                content: question.content,
+                createdAt: question.createdAt,
+                updatedAt: question.updatedAt,
+                isDeleted: question.isDeleted,
+                isHidden: question.isHidden,
+                posts: question.posts
+            ),
+            Post(
+                id: post.id,
+                content: post.content,
+                createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
+                isDeleted: post.isDeleted,
+                isHidden: post.isHidden,
+                profileId: post.profileId,
+                questionId: post.questionId,
+                profile: post.profile,
+                reactions: post.reactions
+            )
+        ))
+    }
+    
+    func writeButtonTapped() {
+        guard let question = selectedQuestion else { return }
+        
+        navigationRouter.paths.append(.edit(
+            Question(
+                questionId: question.questionId,
+                content: question.content,
+                createdAt: question.createdAt,
+                updatedAt: question.updatedAt,
+                isDeleted: question.isDeleted,
+                isHidden: question.isHidden,
+                posts: question.posts
+            ),
+            nil
+        ))
     }
     
     func cardViewTapped(post: PostWithOwnership) {
@@ -169,11 +198,6 @@ final class BoardViewModel: ObservableObject {
     func questionChanged() async {
         if let questionId = selectedQuestion?.questionId {
             await fetchPosts(questionId: questionId)
-            updateLastQuestionId(questionId)
         }
-    }
-    
-    enum Path: Hashable {
-        case edit
     }
 }

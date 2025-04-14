@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Question: Decodable {
+struct Question: Decodable, Hashable {
     let questionId: Int?
     let content: String?
     let createdAt: Date?
