@@ -39,9 +39,6 @@ struct WriteView: View {
             }
             .foregroundStyle(CustomColors.primaryDarker2)
         }
-        .task {
-            await viewModel.taskDidStart()
-        }
         .alert("내용을 입력해주세요.", isPresented: $viewModel.showingAlert) { }
     }
     
@@ -78,17 +75,8 @@ struct WriteView: View {
     
     WriteView(
         viewModel: WriteViewModel(
-            getAllQuestionsUseCase: GetAllQuestionsUseCase(
-                questionRepository: QuestionRepository(supabaseClient: supabseClient),
-                postRespository: postRepository,
-                authService: authService
-            ),
             addPostUseCase: AddPostUseCase(
                 postRepository: postRepository,
-                authService: authService
-            ),
-            getMyQuestionUseCase: GetMyQuestionUseCase(
-                postRespository: postRepository,
                 authService: authService
             ),
             updatePostUseCase: UpdatePostUseCase(

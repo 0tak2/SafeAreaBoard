@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Post: Decodable {
+struct Post: Decodable, Hashable {
     let id: Int?
     let content: String?
     let createdAt: Date?

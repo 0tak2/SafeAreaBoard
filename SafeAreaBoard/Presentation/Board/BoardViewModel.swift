@@ -18,6 +18,7 @@ final class BoardViewModel: ObservableObject {
     @Published var showingEditSheet: Bool = false
     @Published var showingDetailsSheet: Bool = false
     @Published var showingQuestionList: Bool = false
+    @Published var navigationRouter: BoardNavigationRouter
     
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let getAllPostsUseCase: any GetAllPostsUseCaseProtocol
@@ -30,12 +31,14 @@ final class BoardViewModel: ObservableObject {
         getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol,
         getAllPostsUseCase: any GetAllPostsUseCaseProtocol,
         addReactionUseCase: any AddReactionUseCaseProtocol,
-        removeReactionUseCase: any RemoveReactionUseCaseProtocol
+        removeReactionUseCase: any RemoveReactionUseCaseProtocol,
+        navigationRouter: BoardNavigationRouter = BoardNavigationRouter()
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.getAllPostsUseCase = getAllPostsUseCase
         self.addReactionUseCase = addReactionUseCase
         self.removeReactionUseCase = removeReactionUseCase
+        self.navigationRouter = navigationRouter
     }
     
     func taskDidStart() async {
@@ -131,7 +134,32 @@ final class BoardViewModel: ObservableObject {
     }
     
     func editButtonTapped() {
-        // TODO: add writeView to navigationStack
+        guard let question = selectedQuestion,
+              let post = myPost else { return }
+        
+        navigationRouter.paths.append(.edit(
+            Question(
+                questionId: question.questionId,
+                content: question.content,
+                createdAt: question.createdAt,
+                updatedAt: question.updatedAt,
+                isDeleted: question.isDeleted,
+                isHidden: question.isHidden,
+                posts: question.posts
+            ),
+            Post(
+                id: post.id,
+                content: post.content,
+                createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
+                isDeleted: post.isDeleted,
+                isHidden: post.isHidden,
+                profileId: post.profileId,
+                questionId: post.questionId,
+                profile: post.profile,
+                reactions: post.reactions
+            )
+        ))
     }
     
     func cardViewTapped(post: PostWithOwnership) {
@@ -154,9 +182,5 @@ final class BoardViewModel: ObservableObject {
         if let questionId = selectedQuestion?.questionId {
             await fetchPosts(questionId: questionId)
         }
-    }
-    
-    enum Path: Hashable {
-        case edit
     }
 }

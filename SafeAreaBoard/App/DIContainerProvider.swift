@@ -158,7 +158,7 @@ final class DIContainerProvider {
             return AddPostUseCase(postRepository: postRepository, authService: authService)
         }
         
-        container.register((any GetMyQuestionUseCaseProtocol).self) { r in
+        container.register((any GetMyPostUseCaseProtocol).self) { r in
             guard let postRepository = r.resolve(PostRepositoryProtocol.self) else {
                 fatalError("ReactionRepository not resolved")
             }
@@ -167,7 +167,7 @@ final class DIContainerProvider {
                 fatalError("AuthService not resolved")
             }
             
-            return GetMyQuestionUseCase(postRespository: postRepository, authService: authService)
+            return GetMyPostUseCase(postRespository: postRepository, authService: authService)
         }
         
         container.register((any UpdateLastQuestionIdUseCaseProtocol).self) { r in
@@ -255,15 +255,7 @@ final class DIContainerProvider {
         }
         
         container.register(WriteViewModel.self) { r in
-            guard let getAllQuestionsUseCase = r.resolve((any GetAllQuestionsUseCaseProtocol).self) else {
-                fatalError("GetAllQuestionsUseCase not resolved")
-            }
-            
             guard let addPostUseCase = r.resolve((any AddPostUseCaseProtocol).self) else {
-                fatalError("addPostUseCase not resolved")
-            }
-            
-            guard let getMyQuestionUseCase = r.resolve((any GetMyQuestionUseCaseProtocol).self) else {
                 fatalError("addPostUseCase not resolved")
             }
             
@@ -272,9 +264,7 @@ final class DIContainerProvider {
             }
             
             return WriteViewModel(
-                getAllQuestionsUseCase: getAllQuestionsUseCase,
                 addPostUseCase: addPostUseCase,
-                getMyQuestionUseCase: getMyQuestionUseCase,
                 updatePostUseCase: updatePostUseCase
             )
         }

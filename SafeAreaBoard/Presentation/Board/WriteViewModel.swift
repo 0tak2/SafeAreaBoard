@@ -9,72 +9,27 @@ import Foundation
 import os.log
 
 final class WriteViewModel: ObservableObject {
-    @Published var questions: [QuestionWithAnswerStatus] = []
-    @Published var selectedQuestion: QuestionWithAnswerStatus?
+    @Published var selectedQuestion: Question?
     @Published var editingContent: String = ""
     @Published var previousCreatedAt: Date?
     @Published var isError: Bool = false
     @Published var showingAlert: Bool = false
     @Published var isEditMode: Bool = false
+    var navigationRouter: BoardNavigationRouter?
     
-    private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let addPostUseCase: any AddPostUseCaseProtocol
-    private let getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol
     private let updatePostUseCase: any UpdatePostUseCaseProtocol
     
     private let log = Logger.of("WriteViewModel")
     
     init(
-        getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol,
         addPostUseCase: any AddPostUseCaseProtocol,
-        getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol,
-        updatePostUseCase: any UpdatePostUseCaseProtocol
+        updatePostUseCase: any UpdatePostUseCaseProtocol,
+        navigationRouter: BoardNavigationRouter? = nil
     ) {
-        self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.addPostUseCase = addPostUseCase
-        self.getMyQuestionUseCase = getMyQuestionUseCase
         self.updatePostUseCase = updatePostUseCase
-    }
-    
-    func taskDidStart() async {
-        await fetchQuestions()
-    }
-    
-    func fetchQuestions() async {
-        do {
-            let questions = try await getAllQuestionsUseCase.execute(command: ())
-            log.info("fetch questions completed. \(questions)")
-            
-            // can two tasks below be integrated?
-            await MainActor.run {
-                self.questions = questions
-                
-                if selectedQuestion == nil {
-                    selectedQuestion = questions.first
-                }
-            }
-            
-            if let didAnswer = selectedQuestion?.didAnswer,
-               didAnswer,
-               let questionId = selectedQuestion?.questionId {
-                let post = try await getMyQuestionUseCase.execute(command: questionId)
-                await MainActor.run {
-                    isEditMode = didAnswer
-                    editingContent = post?.content ?? ""
-                    previousCreatedAt = post?.createdAt
-                }
-            } else {
-                await MainActor.run {
-                    isEditMode = false
-                    editingContent = ""
-                    previousCreatedAt = nil
-                }
-            }
-        } catch {
-            await MainActor.run {
-                isError = true
-            }
-        }
+        self.navigationRouter = navigationRouter
     }
     
     func saveButtonTapped() {
@@ -113,7 +68,11 @@ final class WriteViewModel: ObservableObject {
             }
             
             await MainActor.run {
+                isEditMode = false
+                selectedQuestion = nil
                 editingContent = ""
+                previousCreatedAt = nil
+                navigationRouter?.paths.removeLast()
             }
         } catch {
             log.error("save post failed. \(error)")
@@ -121,10 +80,22 @@ final class WriteViewModel: ObservableObject {
         }
     }
     
-    func questionTapped(_ question: QuestionWithAnswerStatus) {
-        selectedQuestion = question
-        Task {
-            await fetchQuestions()
+    func configure(isEditMode: Bool, question: Question?, post: Post?) {
+        if isEditMode && (question == nil || post == nil) {
+            log.warning("isEditMode is true, but question or post are nil")
+            return
+        }
+        
+        self.isEditMode = isEditMode
+        
+        if isEditMode {
+            selectedQuestion = question
+            editingContent = post?.content ?? ""
+            previousCreatedAt = post?.createdAt
+        } else {
+            selectedQuestion = nil
+            editingContent = ""
+            previousCreatedAt = nil
         }
     }
 }
