@@ -25,14 +25,14 @@ struct BoardContainerView: View {
                 }
                 .navigationDestination(for: BoardNavigationRouter.Path.self) { path in
                     switch path {
-                    case .edit(let questionOrNil, let postOrNil):
+                    case .edit(let question, let postOrNil):
                         let wrtieViewModel = container.resolve(WriteViewModel.self)!
                         wrtieViewModel.navigationRouter = navigationRouter
                         
                         if let post = postOrNil {
-                            wrtieViewModel.configure(isEditMode: true, question: questionOrNil, post: post)
+                            wrtieViewModel.configure(isEditMode: true, question: question, post: post)
                         } else {
-                            wrtieViewModel.configure(isEditMode: false, question: questionOrNil, post: nil)
+                            wrtieViewModel.configure(isEditMode: false, question: question, post: nil)
                         }
                         return WriteView(viewModel: wrtieViewModel)
                     }

@@ -76,13 +76,16 @@ final class WriteViewModel: ObservableObject {
             }
         } catch {
             log.error("save post failed. \(error)")
-            isError = true
+            
+            await MainActor.run {
+                isError = true
+            }
         }
     }
     
-    func configure(isEditMode: Bool, question: Question?, post: Post?) {
-        if isEditMode && (question == nil || post == nil) {
-            log.warning("isEditMode is true, but question or post are nil")
+    func configure(isEditMode: Bool, question: Question, post: Post?) {
+        if isEditMode && post == nil {
+            log.warning("isEditMode is true, but post is nil")
             return
         }
         
@@ -93,7 +96,7 @@ final class WriteViewModel: ObservableObject {
             editingContent = post?.content ?? ""
             previousCreatedAt = post?.createdAt
         } else {
-            selectedQuestion = nil
+            selectedQuestion = question
             editingContent = ""
             previousCreatedAt = nil
         }

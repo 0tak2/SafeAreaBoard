@@ -162,6 +162,23 @@ final class BoardViewModel: ObservableObject {
         ))
     }
     
+    func writeButtonTapped() {
+        guard let question = selectedQuestion else { return }
+        
+        navigationRouter.paths.append(.edit(
+            Question(
+                questionId: question.questionId,
+                content: question.content,
+                createdAt: question.createdAt,
+                updatedAt: question.updatedAt,
+                isDeleted: question.isDeleted,
+                isHidden: question.isHidden,
+                posts: question.posts
+            ),
+            nil
+        ))
+    }
+    
     func cardViewTapped(post: PostWithOwnership) {
         selectedPost = post
         showingDetailsSheet = true

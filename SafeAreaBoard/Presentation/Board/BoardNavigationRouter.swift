@@ -11,6 +11,6 @@ final class BoardNavigationRouter: ObservableObject {
     @Published var paths: [Path] = []
     
     enum Path: Hashable {
-        case edit(Question?, Post?)
+        case edit(Question, Post?)
     }
 }
