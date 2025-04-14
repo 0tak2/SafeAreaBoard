@@ -52,6 +52,7 @@ struct CardView: View {
                                 .frame(width: 20)
                         }
                         .foregroundStyle(CustomColors.warmGrayDarker1)
+                        .frame(height: 32)
                     }
                 }
                 
