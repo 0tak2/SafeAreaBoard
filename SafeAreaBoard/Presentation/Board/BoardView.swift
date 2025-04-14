@@ -86,7 +86,7 @@ struct BoardView: View {
                 Button {
                     viewModel.questionListButtonTapped()
                 } label: {
-                    Image(systemName: "chevron.down")
+                    Image(systemName: viewModel.showingQuestionList ? "chevron.up" : "chevron.down")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 36)
