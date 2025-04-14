@@ -150,6 +150,7 @@ final class BoardViewModel: ObservableObject {
                 log.debug("deleted post \(postId)")
                 
                 if let questionId = selectedQuestion?.questionId {
+                    await fetchQuestions()
                     await fetchPosts(questionId: questionId)
                 }
             } catch {
