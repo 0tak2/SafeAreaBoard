@@ -18,12 +18,14 @@ final class BoardViewModel: ObservableObject {
     @Published var showingEditSheet: Bool = false
     @Published var showingDetailsSheet: Bool = false
     @Published var showingQuestionList: Bool = false
+    @Published var showingDeleteConfirmAlert: Bool = false
     @Published var navigationRouter: BoardNavigationRouter
     
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let getAllPostsUseCase: any GetAllPostsUseCaseProtocol
     private let addReactionUseCase: any AddReactionUseCaseProtocol
     private let removeReactionUseCase: any RemoveReactionUseCaseProtocol
+    private let removePostUseCase: any RemovePostUseCaseProtocol
     
     private let log = Logger.of("BoardViewModel")
     
@@ -32,12 +34,14 @@ final class BoardViewModel: ObservableObject {
         getAllPostsUseCase: any GetAllPostsUseCaseProtocol,
         addReactionUseCase: any AddReactionUseCaseProtocol,
         removeReactionUseCase: any RemoveReactionUseCaseProtocol,
+        removePostUseCase: any RemovePostUseCaseProtocol,
         navigationRouter: BoardNavigationRouter = BoardNavigationRouter()
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.getAllPostsUseCase = getAllPostsUseCase
         self.addReactionUseCase = addReactionUseCase
         self.removeReactionUseCase = removeReactionUseCase
+        self.removePostUseCase = removePostUseCase
         self.navigationRouter = navigationRouter
     }
     
@@ -129,8 +133,33 @@ final class BoardViewModel: ObservableObject {
     }
     
     func deleteButtonTapped() {
-        // TODO: Delete post
-        print("deleteButtonTapped")
+        showingDeleteConfirmAlert = true
+    }
+    
+    func deletePostConfirmed() {
+        guard let myPost = myPost,
+        let id = myPost.id else { return }
+        
+        removePost(postId: id)
+    }
+    
+    private func removePost(postId: Int) {
+        Task {
+            do {
+                try await removePostUseCase.execute(command: postId)
+                log.debug("deleted post \(postId)")
+                
+                if let questionId = selectedQuestion?.questionId {
+                    await fetchPosts(questionId: questionId)
+                }
+            } catch {
+                log.error("removePostUseCase error: \(error)")
+                
+                await MainActor.run {
+                    isError = true
+                }
+            }
+        }
     }
     
     func editButtonTapped() {
