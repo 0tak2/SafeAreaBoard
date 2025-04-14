@@ -1,5 +1,5 @@
 //
-//  BoardView.swift
+//  BoardContainerView.swift
 //  SafeAreaBoard
 //
 //  Created by 임영택 on 4/14/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BoardView: View {
+struct BoardContainerView: View {
     @StateObject private var viewModel: BoardViewModel
     @StateObject private var navigationRouter: BoardNavigationRouter
     @EnvironmentObject private var container: DIContainerEnvironment

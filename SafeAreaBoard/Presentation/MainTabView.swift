@@ -17,7 +17,7 @@ struct MainTabView: View {
     var body: some View {
         TabView {
             Tab("보드", systemImage: "square.stack") {
-                BoardView(viewModel: boardViewModel)
+                BoardContainerView(viewModel: boardViewModel)
             }
             
             Tab("설정", systemImage: "gearshape") {

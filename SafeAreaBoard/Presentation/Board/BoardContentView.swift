@@ -115,7 +115,7 @@ struct BoardContentView: View {
     let authService = AuthService(supabaseClient: SupabaseProvider.shared.supabase)
     let reactionRepoitory = ReactionRepository(supabaseClient: SupabaseProvider.shared.supabase)
     
-    BoardView(viewModel: BoardViewModel(
+    BoardContainerView(viewModel: BoardViewModel(
         getAllQuestionsUseCase: GetAllQuestionsUseCase(
             questionRepository: QuestionRepository(supabaseClient: SupabaseProvider.shared.supabase),
             postRespository: PostRepository(supabaseClient: SupabaseProvider.shared.supabase),
