@@ -21,7 +21,6 @@ final class WriteViewModel: ObservableObject {
     private let addPostUseCase: any AddPostUseCaseProtocol
     private let getMyQuestionUseCase: any GetMyQuestionUseCaseProtocol
     private let updatePostUseCase: any UpdatePostUseCaseProtocol
-    var tabRouter: TabRouter?
     
     private let log = Logger.of("WriteViewModel")
     
@@ -115,8 +114,6 @@ final class WriteViewModel: ObservableObject {
             
             await MainActor.run {
                 editingContent = ""
-                
-                tabRouter?.currentTab = .board
             }
         } catch {
             log.error("save post failed. \(error)")

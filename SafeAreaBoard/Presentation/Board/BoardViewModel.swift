@@ -23,7 +23,6 @@ final class BoardViewModel: ObservableObject {
     private let getAllPostsUseCase: any GetAllPostsUseCaseProtocol
     private let addReactionUseCase: any AddReactionUseCaseProtocol
     private let removeReactionUseCase: any RemoveReactionUseCaseProtocol
-    var tabRouter: TabRouter?
     
     private let log = Logger.of("BoardViewModel")
     
@@ -132,7 +131,7 @@ final class BoardViewModel: ObservableObject {
     }
     
     func editButtonTapped() {
-        tabRouter?.currentTab = .edit
+        // TODO: add writeView to navigationStack
     }
     
     func cardViewTapped(post: PostWithOwnership) {
