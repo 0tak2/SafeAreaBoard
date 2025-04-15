@@ -30,4 +30,8 @@ final class AuthService: AuthServiceProtocol {
     func logout() async throws {
         try await supabaseClient.auth.signOut()
     }
+    
+    func signInWithEmail(email: String, password: String) async throws {
+        try await supabaseClient.auth.signIn(email: email, password: password)
+    }
 }

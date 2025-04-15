@@ -10,6 +10,7 @@ import Supabase
 
 protocol AuthServiceProtocol {
     func signInWithIdToken(provider: OpenIDConnectCredentials.Provider, idToken: String) async throws
+    func signInWithEmail(email: String, password: String) async throws
     func getAuthStateChanges() -> AsyncStream<(event: AuthChangeEvent, session: Session?)>
     func getCurrentUser() async throws -> User?
     func logout() async throws

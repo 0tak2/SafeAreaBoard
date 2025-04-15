@@ -11,6 +11,10 @@ import AuthenticationServices
 struct IntroPageView: View {
     @ObservedObject private var viewModel: AppViewModel
     
+#if DEBUG
+    @State private var showingEmailLoginForm = false
+#endif
+    
     init(viewModel: AppViewModel) {
         self.viewModel = viewModel
     }
@@ -39,6 +43,15 @@ struct IntroPageView: View {
             }
             .fixedSize()
         }
+        
+#if DEBUG
+        .sheet(isPresented: $showingEmailLoginForm, content: {
+            EmailLoginFormView()
+        })
+        .onShakeGesture {
+            showingEmailLoginForm = true
+        }
+#endif
         .frame(maxHeight: .infinity, alignment: .top)
     }
     
