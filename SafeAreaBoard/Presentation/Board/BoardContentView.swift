@@ -57,6 +57,7 @@ struct BoardContentView: View {
                         } heartButtonTapped: { postId, isLiked in
                             viewModel.heartButtonTapped(postId: postId, isLiked: isLiked)
                         }
+                        .id(myPost.id)
                         .onTapGesture {
                             viewModel.cardViewTapped(post: myPost)
                         }
@@ -66,6 +67,7 @@ struct BoardContentView: View {
                         CardView(post: post, editButtonTapped: nil) { postId, isLiked in
                             viewModel.heartButtonTapped(postId: postId, isLiked: isLiked)
                         }
+                        .id(post.id)
                         .onTapGesture {
                             viewModel.cardViewTapped(post: post)
                         }

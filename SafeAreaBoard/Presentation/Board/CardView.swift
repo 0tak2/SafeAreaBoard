@@ -19,8 +19,6 @@ struct CardView: View {
         self.post = post
         self.editButtonTapped = editButtonTapped
         self.heartButtonTapped = heartButtonTapped
-        self._isLikedByMySelf = State(initialValue: post.isReactedByMyself)
-        self._likesCount = State(initialValue: post.reactions?.count ?? 0)
     }
     
     var body: some View {
@@ -91,6 +89,10 @@ struct CardView: View {
                 }
             }
             .padding(16)
+        }
+        .onAppear() {
+            isLikedByMySelf = post.isReactedByMyself
+            likesCount = post.reactions?.count ?? 0
         }
     }
 }
