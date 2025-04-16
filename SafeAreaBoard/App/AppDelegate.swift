@@ -58,7 +58,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         log.info("didRegisterForRemoteNotificationsWithDeviceToken deviceToken=\(deviceToken)")
-        Messaging.messaging().apnsToken = deviceToken
+        
+        Task {
+            do {
+                // 현재 FCM 토큰이 유효한 경우 apnsToken을 할당해도 delegate의 didReceiveRegistrationToken이 호출되지 않는다.
+                // 따라서 이 경우 직접 FCM 토큰을 얻어 DB에 업데이트 한다.
+                let token = try await Messaging.messaging().token()
+                try await updateFCMTokenUseCase.execute(command: token)
+                log.info("updateFCMTokenUseCase success fcmToken=\(token)")
+            } catch {
+                log.info("currently not token set...")
+                Messaging.messaging().apnsToken = deviceToken
+            }
+        }
     }
 }
 

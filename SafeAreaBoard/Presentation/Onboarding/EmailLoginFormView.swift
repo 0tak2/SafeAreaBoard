@@ -42,6 +42,12 @@ struct EmailLoginFormView: View {
         Task {
             do {
                 try await authService.signInWithEmail(email: email, password: password)
+                
+                // MARK: Remote Notification
+                // FIXME: Duplicated
+                let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+                try await UNUserNotificationCenter.current().requestAuthorization(options: authOptions)
+                await UIApplication.shared.registerForRemoteNotifications()
             } catch {
                 print("로그인에 실패했습니다. \(error)")
             }

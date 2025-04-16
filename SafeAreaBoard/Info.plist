@@ -4,6 +4,8 @@
 <dict>
 	<key>ENABLE_TEST_LOCAL_SUPABASE</key>
 	<string>$(ENABLE_TEST_LOCAL_SUPABASE)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>SUPABASE_KEY</key>
 	<string>$(SUPABASE_KEY)</string>
 	<key>SUPABASE_LOCAL_ACCOUNT_EMAIL</key>

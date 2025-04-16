@@ -88,6 +88,12 @@ final class AppViewModel: ObservableObject {
             let authorization = try result.get()
             Task {
                 try await signInWithIdTokenUseCase.execute(command: authorization)
+                
+                // MARK: Remote Notification
+                // FIXME: Duplicated
+                let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+                try await UNUserNotificationCenter.current().requestAuthorization(options: authOptions)
+                await UIApplication.shared.registerForRemoteNotifications()
             }
         } catch {
             isError = true
