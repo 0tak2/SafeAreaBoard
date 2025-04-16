@@ -21,6 +21,7 @@ final class SettingViewModel: ObservableObject {
     private let getUserProfileUseCase: any GetCurrentUserProfileUseCaseProtocol
     private let updateNicknameUseCase: any UpdateNicknameUseCaseProtocol
     private let updateFCMTokenUseCase: any UpdateFCMTokenUseCaseProtocol
+    private let logoutUseCase: any LogoutUseCaseProtocol
     private let userDefaultRepository: any UserDefaultsRepositoryProtocol
     private var currentUserProfile: Profile?
     
@@ -31,11 +32,13 @@ final class SettingViewModel: ObservableObject {
         getUserProfileUseCase: any GetCurrentUserProfileUseCaseProtocol,
         updateNicknameUseCase: any UpdateNicknameUseCaseProtocol,
         updateFCMTokenUseCase: any UpdateFCMTokenUseCaseProtocol,
+        logoutUseCase: any LogoutUseCaseProtocol,
         userDefaultRepository: any UserDefaultsRepositoryProtocol
     ) {
         self.getUserProfileUseCase = getUserProfileUseCase
         self.updateNicknameUseCase = updateNicknameUseCase
         self.updateFCMTokenUseCase = updateFCMTokenUseCase
+        self.logoutUseCase = logoutUseCase
         self.userDefaultRepository = userDefaultRepository
     }
     
@@ -114,6 +117,22 @@ final class SettingViewModel: ObservableObject {
             await MainActor.run {
                 isError = true
             }
+        }
+    }
+    
+    func logoutButtonTapped() {
+        Task {
+            await logout()
+            log.debug("logout completed...")
+        }
+    }
+    
+    private func logout() async {
+        do {
+            try await logoutUseCase.execute(command: ())
+        } catch {
+            log.error("error occured \(error)")
+            isError = true
         }
     }
 }

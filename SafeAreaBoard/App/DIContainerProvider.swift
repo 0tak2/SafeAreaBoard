@@ -311,6 +311,10 @@ final class DIContainerProvider {
                 fatalError("UpdateFCMTokenUseCase not resolved")
             }
             
+            guard let logoutUseCase = r.resolve((any LogoutUseCaseProtocol).self) else {
+                fatalError("LogoutUseCase not resolved")
+            }
+            
             guard let userDefaultsRepository = r.resolve(UserDefaultsRepositoryProtocol.self) else {
                 fatalError("UserDefaultsRepository not resolved")
             }
@@ -319,6 +323,7 @@ final class DIContainerProvider {
                 getUserProfileUseCase: getUserProfileUseCase,
                 updateNicknameUseCase: updateNicknameUseCase,
                 updateFCMTokenUseCase: updateFCMTokenUseCase,
+                logoutUseCase: logoutUseCase,
                 userDefaultRepository: userDefaultsRepository
             )
         }

@@ -72,6 +72,7 @@ struct SettingView: View {
             profileRepository: profileRepository,
             authService: authService
         ),
+        logoutUseCase: LogoutUseCase(authService: authService),
         userDefaultRepository: UserDefaultsRepository()
     ))
 }
