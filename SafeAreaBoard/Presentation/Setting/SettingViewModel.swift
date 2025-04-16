@@ -15,34 +15,36 @@ final class SettingViewModel: ObservableObject {
     @Published var isError = false
     @Published var editingUserName = ""
     @Published var isOnNotification: Bool = false
+    @Published var saveButtonEnabled: Bool = true
+    @Published var showingCompleteAlert: Bool = false
     
     private let getUserProfileUseCase: any GetCurrentUserProfileUseCaseProtocol
+    private let updateNicknameUseCase: any UpdateNicknameUseCaseProtocol
     private let updateFCMTokenUseCase: any UpdateFCMTokenUseCaseProtocol
     private let userDefaultRepository: any UserDefaultsRepositoryProtocol
+    private var currentUserProfile: Profile?
     
     private var subscriptions: Set<AnyCancellable> = []
     private let log = Logger.of("SettingViewModel")
     
     init(
         getUserProfileUseCase: any GetCurrentUserProfileUseCaseProtocol,
+        updateNicknameUseCase: any UpdateNicknameUseCaseProtocol,
         updateFCMTokenUseCase: any UpdateFCMTokenUseCaseProtocol,
         userDefaultRepository: any UserDefaultsRepositoryProtocol
     ) {
         self.getUserProfileUseCase = getUserProfileUseCase
+        self.updateNicknameUseCase = updateNicknameUseCase
         self.updateFCMTokenUseCase = updateFCMTokenUseCase
         self.userDefaultRepository = userDefaultRepository
     }
     
     func startTask() async {
         do {
-            // MARK: get profile
-            let profile = try await getUserProfileUseCase.execute(command: ())
-            
-            // MARK: load user notification status
-            let userNotificationCenter = UNUserNotificationCenter.current()
+            currentUserProfile = try await getUserProfileUseCase.execute(command: ())
             
             await MainActor.run {
-                editingUserName = profile.nickname ?? ""
+                editingUserName = currentUserProfile?.nickname ?? ""
                 isOnNotification = userDefaultRepository.get(key: .onRemoteNotification) ?? true
             }
             
@@ -52,8 +54,15 @@ final class SettingViewModel: ObservableObject {
                 self.handleNotificationPreferenceChange()
             }
             .store(in: &subscriptions)
+            
+            $editingUserName
+                .receive(on: RunLoop.main)
+                .sink { userName in
+                self.saveButtonEnabled = !userName.isEmpty
+            }
+            .store(in: &subscriptions)
         } catch {
-            log.error("failed to fetch user profile: \(error)")
+            log.error("failed to fetch user preferences: \(error)")
             isError = true
         }
     }
@@ -81,6 +90,30 @@ final class SettingViewModel: ObservableObject {
             await UIApplication.shared.unregisterForRemoteNotifications()
             userDefaultRepository.set(false, forKey: .onRemoteNotification) // for next app launching
             log.info("notification disabled")
+        }
+    }
+    
+    func saveButtonTapped() {
+        Task {
+            await updateNickname()
+        }
+    }
+    
+    func updateNickname() async {
+        guard let userId = currentUserProfile?.userId else {
+            return
+        }
+        
+        do {
+            let _ = try await updateNicknameUseCase.execute(command: UpdateProfileCommand(userId: userId, params: UpdateProfileParams(nickname: editingUserName)))
+            await MainActor.run {
+                showingCompleteAlert = true
+            }
+        } catch {
+            log.error("failed to udpate nickname")
+            await MainActor.run {
+                isError = true
+            }
         }
     }
 }

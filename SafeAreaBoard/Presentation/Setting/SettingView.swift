@@ -41,11 +41,14 @@ struct SettingView: View {
             .onTapGesture {
                 textFieldFocused = false
             }
+            .alert("저장되었습니다.", isPresented: $viewModel.showingCompleteAlert) { }
             .navigationTitle("설정")
             .toolbar {
                 Button("저장") {
-                    print("저장 tapped!")
+                    viewModel.saveButtonTapped()
+                    textFieldFocused = false
                 }
+                .disabled(!viewModel.saveButtonEnabled)
                 .tint(CustomColors.primaryDarker2)
             }
         }
@@ -64,6 +67,7 @@ struct SettingView: View {
             authService: authService,
             profileRepository: profileRepository
         ),
+        updateNicknameUseCase: UpdateNicknameUseCase(profileRepository: profileRepository),
         updateFCMTokenUseCase: UpdateFCMTokenUseCase(
             profileRepository: profileRepository,
             authService: authService
