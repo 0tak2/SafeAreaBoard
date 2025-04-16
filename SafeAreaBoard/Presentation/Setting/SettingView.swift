@@ -67,6 +67,7 @@ struct SettingView: View {
         updateFCMTokenUseCase: UpdateFCMTokenUseCase(
             profileRepository: profileRepository,
             authService: authService
-        )
+        ),
+        userDefaultRepository: UserDefaultsRepository()
     ))
 }

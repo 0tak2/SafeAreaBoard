@@ -307,9 +307,14 @@ final class DIContainerProvider {
                 fatalError("UpdateFCMTokenUseCase not resolved")
             }
             
+            guard let userDefaultsRepository = r.resolve(UserDefaultsRepositoryProtocol.self) else {
+                fatalError("UserDefaultsRepository not resolved")
+            }
+            
             return SettingViewModel(
                 getUserProfileUseCase: getUserProfileUseCase,
-                updateFCMTokenUseCase: updateFCMTokenUseCase
+                updateFCMTokenUseCase: updateFCMTokenUseCase,
+                userDefaultRepository: userDefaultsRepository
             )
         }
     }

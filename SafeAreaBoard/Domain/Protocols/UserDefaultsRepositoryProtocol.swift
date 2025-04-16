@@ -14,4 +14,5 @@ protocol UserDefaultsRepositoryProtocol {
 
 enum UserDefaultsKey: String {
     case lastSelectedQuestionId
+    case onRemoteNotification
 }

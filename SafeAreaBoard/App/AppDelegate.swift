@@ -16,10 +16,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let gcmMessageIDKey = "gcm.message_id"
     private let log = Logger.of("AppDelegate")
     private let updateFCMTokenUseCase: any UpdateFCMTokenUseCaseProtocol
+    private let userDefaultRepository: any UserDefaultsRepositoryProtocol
+    private var isRemoteNotficationEnabled: Bool {
+        let isRemoteNotficationEnabled: Bool? = userDefaultRepository.get(key: .onRemoteNotification)
+        return isRemoteNotficationEnabled ?? true // default value: true
+    }
     
     override init() {
         let container = DIContainerProvider.shared.container
         self.updateFCMTokenUseCase = container.resolve((any UpdateFCMTokenUseCaseProtocol).self)!
+        self.userDefaultRepository = container.resolve((any UserDefaultsRepositoryProtocol).self)!
         
         super.init()
     }
@@ -41,7 +47,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             completionHandler: { _, _ in }
         )
         
-        application.registerForRemoteNotifications()
+        if isRemoteNotficationEnabled {
+            application.registerForRemoteNotifications()
+        } else {
+            application.unregisterForRemoteNotifications()
+        }
         
         return true
     }
