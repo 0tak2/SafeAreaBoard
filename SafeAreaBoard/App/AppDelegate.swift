@@ -15,6 +15,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private let gcmMessageIDKey = "gcm.message_id"
     private let log = Logger.of("AppDelegate")
+    private let updateFCMTokenUseCase: any UpdateFCMTokenUseCaseProtocol
+    
+    override init() {
+        let container = DIContainerProvider.shared.container
+        self.updateFCMTokenUseCase = container.resolve((any UpdateFCMTokenUseCaseProtocol).self)!
+        
+        super.init()
+    }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         // MARK: Firebase
@@ -54,8 +62,15 @@ extension AppDelegate: MessagingDelegate {
             userInfo: dataDict
         )
         
-        // TODO: If necessary send token to application server.
-        // Note: This callback is fired at each app startup and whenever a new token is generated.
+        if let fcmToken = fcmToken {
+            Task {
+                do {
+                    try await updateFCMTokenUseCase.execute(command: fcmToken)
+                } catch {
+                    log.error("update fcm token error: \(error)")
+                }
+            }
+        }
     }
 }
 

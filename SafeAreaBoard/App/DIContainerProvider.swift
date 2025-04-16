@@ -84,12 +84,24 @@ final class DIContainerProvider {
             return LogoutUseCase(authService: authService)
         }
         
-        container.register((any UpdateProfileUseCaseProtocol).self) { r in
+        container.register((any UpdateNicknameUseCaseProtocol).self) { r in
             guard let profileRepository = r.resolve(ProfileRepositoryProtocol.self) else {
                 fatalError("ProfileRepository not resolved")
             }
             
-            return UpdateProfileUseCase(profileRepository: profileRepository)
+            return UpdateNicknameUseCase(profileRepository: profileRepository)
+        }
+        
+        container.register((any UpdateFCMTokenUseCaseProtocol).self) { r in
+            guard let profileRepository = r.resolve(ProfileRepositoryProtocol.self) else {
+                fatalError("ProfileRepository not resolved")
+            }
+            
+            guard let authService = r.resolve(AuthServiceProtocol.self) else {
+                fatalError("AuthService not resolved")
+            }
+            
+            return UpdateFCMTokenUseCase(profileRepository: profileRepository, authService: authService)
         }
         
         container.register((any GetAllQuestionsUseCaseProtocol).self) { r in
@@ -225,7 +237,7 @@ final class DIContainerProvider {
                 fatalError("SignInWithIdTokenUseCase not resolved")
             }
             
-            guard let updateProfileUseCase = r.resolve((any UpdateProfileUseCaseProtocol).self) else {
+            guard let updateNicknameUseCase = r.resolve((any UpdateNicknameUseCaseProtocol).self) else {
                 fatalError("SignInWithIdTokenUseCase not resolved")
             }
             
@@ -233,7 +245,7 @@ final class DIContainerProvider {
                 getAuthStateChangeAsnycStreamUseCase: getAuthStateChangeAsnycStreamUseCase,
                 getCurrentUserProfileUseCase: getCurrentUserProfileUseCase,
                 signInWithIdTokenUseCase: signInWithIdTokenUseCase,
-                updateProfileUseCase: updateProfileUseCase
+                updateNicknameUseCase: updateNicknameUseCase
             )
         }
         

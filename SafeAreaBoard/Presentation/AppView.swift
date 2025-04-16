@@ -48,6 +48,6 @@ struct AppView: View {
     let profileRepository = ProfileRepository(supabaseClient: SupabaseProvider.shared.supabase)
     
     AppView(
-        viewModel: AppViewModel(getAuthStateChangeAsnycStreamUseCase: GetAuthStateChangeAsyncStreamUseCase(authService: authService), getCurrentUserProfileUseCase: GetProfileUseCase(authService: authService, profileRepository: profileRepository), signInWithIdTokenUseCase: SignInWithIdTokenUseCase(authService: authService), updateProfileUseCase: UpdateProfileUseCase(profileRepository: profileRepository))
+        viewModel: AppViewModel(getAuthStateChangeAsnycStreamUseCase: GetAuthStateChangeAsyncStreamUseCase(authService: authService), getCurrentUserProfileUseCase: GetProfileUseCase(authService: authService, profileRepository: profileRepository), signInWithIdTokenUseCase: SignInWithIdTokenUseCase(authService: authService), updateNicknameUseCase: UpdateNicknameUseCase(profileRepository: profileRepository))
     )
 }

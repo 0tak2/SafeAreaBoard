@@ -37,4 +37,12 @@ final class ProfileRepository: ProfileRepositoryProtocol {
         
         return Profile(userId: userId, nickname: updateDTO.nickname)
     }
+    
+    func updateFCMToken(of userId: UUID, to token: String) async throws {
+        try await supabaseClient
+            .from(tableName)
+            .update(UpdateFCMTokenProfileParams(fcmToken: token))
+            .eq("id", value: userId)
+            .execute()
+    }
 }
