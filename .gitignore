@@ -39,3 +39,6 @@ Debug.xcconfig
 **/supabase/.temp
 
 xcuserdata/
+SafeAreaBoard/GoogleService-Info.plist
+*.p8
+supabase/functions/serviceAccountKey.json

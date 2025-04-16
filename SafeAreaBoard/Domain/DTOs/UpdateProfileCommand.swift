@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UpdateProfileCommand {
+struct UpdateProfileCommand<T> {
     let userId: UUID
-    let params: UpdateProfileParams
+    let params: T
 }

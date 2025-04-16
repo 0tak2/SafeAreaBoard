@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3D2D60012DA8AEE400BF5FE3 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 3D2D60002DA8AEE400BF5FE3 /* Swinject */; };
+		3D7A55AD2DAF3FDE0023A40C /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3D7A55AC2DAF3FDE0023A40C /* FirebaseAnalytics */; };
+		3D7A55AF2DAF3FDE0023A40C /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 3D7A55AE2DAF3FDE0023A40C /* FirebaseMessaging */; };
 		3DD0594D2DA755A600915188 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD0594C2DA755A600915188 /* Supabase */; };
 		3DD059522DA755DB00915188 /* Debug.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = 3DD059512DA755DB00915188 /* Debug.xcconfig.example */; };
 		3DD059542DA7569700915188 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3DD059532DA7569700915188 /* Debug.xcconfig */; };
@@ -94,8 +96,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D7A55AF2DAF3FDE0023A40C /* FirebaseMessaging in Frameworks */,
 				3DD0594D2DA755A600915188 /* Supabase in Frameworks */,
 				3D2D60012DA8AEE400BF5FE3 /* Swinject in Frameworks */,
+				3D7A55AD2DAF3FDE0023A40C /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,6 +177,8 @@
 			packageProductDependencies = (
 				3DD0594C2DA755A600915188 /* Supabase */,
 				3D2D60002DA8AEE400BF5FE3 /* Swinject */,
+				3D7A55AC2DAF3FDE0023A40C /* FirebaseAnalytics */,
+				3D7A55AE2DAF3FDE0023A40C /* FirebaseMessaging */,
 			);
 			productName = SafeAreaBoard;
 			productReference = 3D040DCB2DA6A0210040493B /* SafeAreaBoard.app */;
@@ -260,6 +266,7 @@
 			packageReferences = (
 				3DD0594A2DA7559100915188 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				3D2D5FFF2DA8AEE400BF5FE3 /* XCRemoteSwiftPackageReference "Swinject" */,
+				3D7A55AB2DAF3FDE0023A40C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3D040DCC2DA6A0210040493B /* Products */;
@@ -648,6 +655,14 @@
 				version = 2.9.1;
 			};
 		};
+		3D7A55AB2DAF3FDE0023A40C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.11.0;
+			};
+		};
 		3DD0594A2DA7559100915188 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/supabase/supabase-swift";
@@ -663,6 +678,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3D2D5FFF2DA8AEE400BF5FE3 /* XCRemoteSwiftPackageReference "Swinject" */;
 			productName = Swinject;
+		};
+		3D7A55AC2DAF3FDE0023A40C /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D7A55AB2DAF3FDE0023A40C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		3D7A55AE2DAF3FDE0023A40C /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D7A55AB2DAF3FDE0023A40C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 		3DD0594C2DA755A600915188 /* Supabase */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -10,4 +10,5 @@ import Foundation
 protocol ProfileRepositoryProtocol {
     func getProfileOf(userId: UUID) async throws -> Profile
     func updateProfile(of userId: UUID, to updateDTO: UpdateProfileParams) async throws -> Profile
+    func updateFCMToken(of userId: UUID, to token: String) async throws
 }

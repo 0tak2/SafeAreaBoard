@@ -70,6 +70,6 @@ struct IntroPageView: View {
         getAuthStateChangeAsnycStreamUseCase: GetAuthStateChangeAsyncStreamUseCase(authService: authService),
         getCurrentUserProfileUseCase: GetProfileUseCase(authService: authService, profileRepository: profileRepository),
         signInWithIdTokenUseCase: SignInWithIdTokenUseCase(authService: authService),
-        updateProfileUseCase: UpdateProfileUseCase(profileRepository: profileRepository))
+        updateNicknameUseCase: UpdateNicknameUseCase(profileRepository: profileRepository))
     )
 }

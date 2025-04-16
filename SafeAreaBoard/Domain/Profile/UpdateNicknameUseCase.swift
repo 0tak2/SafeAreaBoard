@@ -8,18 +8,18 @@
 import Foundation
 import os.log
 
-protocol UpdateProfileUseCaseProtocol: UseCase where Command == UpdateProfileCommand, Result == Profile {
+protocol UpdateNicknameUseCaseProtocol: UseCase where Command == UpdateProfileCommand<UpdateProfileParams>, Result == Profile {
 }
 
-struct UpdateProfileUseCase: UpdateProfileUseCaseProtocol {
+struct UpdateNicknameUseCase: UpdateNicknameUseCaseProtocol {
     private let profileRepository: ProfileRepositoryProtocol
-    private let log = Logger.of("UpdateProfileUseCase")
+    private let log = Logger.of("UpdateNicknameUseCase")
     
     init(profileRepository: ProfileRepositoryProtocol) {
         self.profileRepository = profileRepository
     }
     
-    func execute(command: UpdateProfileCommand) async throws -> Profile {
+    func execute(command: UpdateProfileCommand<UpdateProfileParams>) async throws -> Profile {
         do {
             return try await profileRepository.updateProfile(of: command.userId, to: command.params)
         } catch {

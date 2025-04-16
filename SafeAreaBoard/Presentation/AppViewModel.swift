@@ -19,7 +19,7 @@ final class AppViewModel: ObservableObject {
     private let getAuthStateChangeAsnycStreamUseCase: any GetAuthStateChangeAsyncStreamUseCaseProtocol
     private let getCurrentUserProfileUseCase: any GetProfileUseCaseProtocol
     private let signInWithIdTokenUseCase: any SignInWithIdTokenUseCaseProtocol
-    private let updateProfileUseCase: any UpdateProfileUseCaseProtocol
+    private let updateNicknameUseCase: any UpdateNicknameUseCaseProtocol
     
     private var userId: UUID? // cannot bind to view
     
@@ -29,12 +29,12 @@ final class AppViewModel: ObservableObject {
         getAuthStateChangeAsnycStreamUseCase: any GetAuthStateChangeAsyncStreamUseCaseProtocol,
         getCurrentUserProfileUseCase: any GetProfileUseCaseProtocol,
         signInWithIdTokenUseCase: any SignInWithIdTokenUseCaseProtocol,
-        updateProfileUseCase: any UpdateProfileUseCaseProtocol
+        updateNicknameUseCase: any UpdateNicknameUseCaseProtocol
     ) {
         self.getAuthStateChangeAsnycStreamUseCase = getAuthStateChangeAsnycStreamUseCase
         self.getCurrentUserProfileUseCase = getCurrentUserProfileUseCase
         self.signInWithIdTokenUseCase = signInWithIdTokenUseCase
-        self.updateProfileUseCase = updateProfileUseCase
+        self.updateNicknameUseCase = updateNicknameUseCase
     }
   
     func handleAuthStateChange() async {
@@ -106,9 +106,9 @@ final class AppViewModel: ObservableObject {
         
         Task {
             do {
-                let _ = try await updateProfileUseCase.execute(command: .init(userId: userId, params: .init(nickname: editingNickname)))
+                let _ = try await updateNicknameUseCase.execute(command: .init(userId: userId, params: .init(nickname: editingNickname)))
             } catch {
-                log.error("updateProfileUseCase failed: \(error)")
+                log.error("updateNicknameUseCase failed: \(error)")
                 isError = true
             }
             

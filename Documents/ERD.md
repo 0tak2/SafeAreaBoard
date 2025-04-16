@@ -8,6 +8,7 @@ erDiagram
     profiles ||--o{ reactions : "gives"
     questions ||--o{ posts : "asked for"
     posts ||--o{ reactions : "receives"
+    profiles ||--o{ notifications : "receives"
 
     profiles {
         uuid id PK "사용자 ID"
@@ -40,6 +41,16 @@ erDiagram
         datetime created_at "작성일"
         string profile_id FK "반응을 단 사용자 ID"
         int post_id FK "대상 포스트 ID"
+    }
+
+    notifications {
+        uuid id PK "알림 ID"
+        string profile_id FK "수신자 ID"
+        boolean is_for_all "전체 유저 대상 여부"
+        string notification_type "알림 유형"
+        jsonb arguments "알림 관련 정보"
+        datetime created_at "생성일"
+        datetime sent_at "발송일"
     }
 ```
 

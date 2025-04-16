@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct SafeAreaBoardApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
     var body: some Scene {
         WindowGroup {
             AppView(viewModel: DIContainerProvider.shared.container.resolve(AppViewModel.self)!)
