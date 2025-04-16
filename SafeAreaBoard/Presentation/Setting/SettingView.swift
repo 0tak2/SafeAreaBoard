@@ -28,19 +28,20 @@ struct SettingView: View {
                     Toggle("알림 수신", isOn: $viewModel.isOnNotification)
                 }
                 
+                Spacer()
+                
                 Section {
-                    Button {
-                        //
-                    } label: {
-                        Text("로그아웃")
-                            .foregroundStyle(CustomColors.primaryDarker2)
-                    }
+                    Text("로그아웃")
+                        .foregroundStyle(CustomColors.primaryDarker2)
+                        .simultaneousGesture(TapGesture().onEnded({ _ in
+                            viewModel.logoutButtonTapped()
+                        }))
                 }
             }
-            .listStyle(.grouped)
-            .onTapGesture {
+            .listStyle(.inset)
+            .simultaneousGesture(TapGesture().onEnded({ _ in
                 textFieldFocused = false
-            }
+            }))
             .alert("저장되었습니다.", isPresented: $viewModel.showingCompleteAlert) { }
             .navigationTitle("설정")
             .toolbar {
