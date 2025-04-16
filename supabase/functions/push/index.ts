@@ -109,6 +109,17 @@ Deno.serve(async (req) => {
     responses.push(resData)
   }
 
+  console.log("알림 전송에 성공했습니다", notif)
+
+  const { error } = await supabase
+    .from('notifications')
+    .update({ 'sent_at': new Date().toISOString() })
+    .eq('id', notif.id)
+  
+  if (error) {
+    console.error('알림 전송에는 성공했지만 notifications 갱신에는 실패했습니다.', error)
+  }
+
   return new Response(JSON.stringify({ sent: responses.length }), {
     headers: { 'Content-Type': 'application/json' },
   })
