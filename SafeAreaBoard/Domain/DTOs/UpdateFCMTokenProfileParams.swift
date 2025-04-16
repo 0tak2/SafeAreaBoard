@@ -8,7 +8,7 @@
 import Foundation
 
 struct UpdateFCMTokenProfileParams: Encodable {
-    let fcmToken: String?
+    @NullEncodable var fcmToken: String?
     
     enum CodingKeys: String, CodingKey {
         case fcmToken = "fcm_token"

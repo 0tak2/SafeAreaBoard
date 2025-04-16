@@ -9,9 +9,14 @@ import SwiftUI
 
 struct MainTabView: View {
     private var boardViewModel: BoardViewModel
+    private var settingViewModel: SettingViewModel
     
-    init(boardViewModel: BoardViewModel) {
+    init(
+        boardViewModel: BoardViewModel,
+        settingViewModel: SettingViewModel
+    ) {
         self.boardViewModel = boardViewModel
+        self.settingViewModel = settingViewModel
     }
     
     var body: some View {
@@ -21,7 +26,7 @@ struct MainTabView: View {
             }
             
             Tab("설정", systemImage: "gearshape") {
-                SettingView()
+                SettingView(viewModel: settingViewModel)
             }
         }
         .tint(CustomColors.primaryDarker2)

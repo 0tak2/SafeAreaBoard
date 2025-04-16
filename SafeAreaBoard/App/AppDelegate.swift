@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UNUserNotificationCenter.current().delegate = self
         
+        // FIXME: Should extract to UseCase?
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().requestAuthorization(
             options: authOptions,
@@ -66,6 +67,7 @@ extension AppDelegate: MessagingDelegate {
             Task {
                 do {
                     try await updateFCMTokenUseCase.execute(command: fcmToken)
+                    log.info("updateFCMTokenUseCase success fcmToken=\(fcmToken)")
                 } catch {
                     log.error("update fcm token error: \(error)")
                 }

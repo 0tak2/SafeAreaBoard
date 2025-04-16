@@ -64,7 +64,7 @@ final class DIContainerProvider {
             return GetAuthStateChangeAsyncStreamUseCase(authService: authService)
         }
         
-        container.register((any GetProfileUseCaseProtocol).self) { r in
+        container.register((any GetCurrentUserProfileUseCaseProtocol).self) { r in
             guard let authService = r.resolve(AuthServiceProtocol.self) else {
                 fatalError("AuthService not resolved")
             }
@@ -73,7 +73,7 @@ final class DIContainerProvider {
                 fatalError("ProfileRepository not resolved")
             }
             
-            return GetProfileUseCase(authService: authService, profileRepository: profileRepository)
+            return GetCurrentUserProfileUseCase(authService: authService, profileRepository: profileRepository)
         }
         
         container.register((any LogoutUseCaseProtocol).self) { r in
@@ -229,7 +229,7 @@ final class DIContainerProvider {
                 fatalError("GetAuthStateChangeAsnycStreamUseCase not resolved")
             }
             
-            guard let getCurrentUserProfileUseCase = r.resolve((any GetProfileUseCaseProtocol).self) else {
+            guard let getCurrentUserProfileUseCase = r.resolve((any GetCurrentUserProfileUseCaseProtocol).self) else {
                 fatalError("GetAuthStateChangeAsnycStreamUseCase not resolved")
             }
             
@@ -295,6 +295,21 @@ final class DIContainerProvider {
             return WriteViewModel(
                 addPostUseCase: addPostUseCase,
                 updatePostUseCase: updatePostUseCase
+            )
+        }
+        
+        container.register(SettingViewModel.self) { r in
+            guard let getUserProfileUseCase = r.resolve((any GetCurrentUserProfileUseCaseProtocol).self) else {
+                fatalError("GetCurrentUserProfileUseCase not resolved")
+            }
+            
+            guard let updateFCMTokenUseCase = r.resolve((any UpdateFCMTokenUseCaseProtocol).self) else {
+                fatalError("UpdateFCMTokenUseCase not resolved")
+            }
+            
+            return SettingViewModel(
+                getUserProfileUseCase: getUserProfileUseCase,
+                updateFCMTokenUseCase: updateFCMTokenUseCase
             )
         }
     }

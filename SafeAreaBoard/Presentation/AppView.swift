@@ -26,7 +26,12 @@ struct AppView: View {
                         SetPreferenceView(viewModel: viewModel)
                     } else {
                         let boardViewModel = container.resolve(BoardViewModel.self)! // FIXME: should think about the way of injecting
-                        MainTabView(boardViewModel: boardViewModel)
+                        let settingViewModel = container.resolve(SettingViewModel.self)!
+                        
+                        MainTabView(
+                            boardViewModel: boardViewModel,
+                            settingViewModel: settingViewModel
+                        )
                     }
                 }
             }
@@ -48,6 +53,6 @@ struct AppView: View {
     let profileRepository = ProfileRepository(supabaseClient: SupabaseProvider.shared.supabase)
     
     AppView(
-        viewModel: AppViewModel(getAuthStateChangeAsnycStreamUseCase: GetAuthStateChangeAsyncStreamUseCase(authService: authService), getCurrentUserProfileUseCase: GetProfileUseCase(authService: authService, profileRepository: profileRepository), signInWithIdTokenUseCase: SignInWithIdTokenUseCase(authService: authService), updateNicknameUseCase: UpdateNicknameUseCase(profileRepository: profileRepository))
+        viewModel: AppViewModel(getAuthStateChangeAsnycStreamUseCase: GetAuthStateChangeAsyncStreamUseCase(authService: authService), getCurrentUserProfileUseCase: GetCurrentUserProfileUseCase(authService: authService, profileRepository: profileRepository), signInWithIdTokenUseCase: SignInWithIdTokenUseCase(authService: authService), updateNicknameUseCase: UpdateNicknameUseCase(profileRepository: profileRepository))
     )
 }

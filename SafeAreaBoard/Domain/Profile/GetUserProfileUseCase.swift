@@ -8,22 +8,26 @@
 import Foundation
 import os.log
 
-protocol GetProfileUseCaseProtocol: UseCase where Command == UUID, Result == Profile {
+protocol GetCurrentUserProfileUseCaseProtocol: UseCase where Command == Void, Result == Profile {
 }
 
-struct GetProfileUseCase: GetProfileUseCaseProtocol {
+struct GetCurrentUserProfileUseCase: GetCurrentUserProfileUseCaseProtocol {
     private let authService: AuthServiceProtocol
     private let profileRepository: ProfileRepositoryProtocol
-    private let log = Logger.of("GetUserProfileUseCase")
+    private let log = Logger.of("GetCurrentUserProfileUseCase")
     
     init(authService: AuthServiceProtocol, profileRepository: ProfileRepositoryProtocol) {
         self.authService = authService
         self.profileRepository = profileRepository
     }
     
-    func execute(command: UUID) async throws -> Profile {
+    func execute(command: ()) async throws -> Profile {
         do {
-            return try await profileRepository.getProfileOf(userId: command)
+            if let myUserId = try await authService.getCurrentUser()?.id {
+                return try await profileRepository.getProfileOf(userId: myUserId)
+            }
+            
+            throw DomainError.notFoundError("User not found")
         } catch {
             throw DomainError.dataLayerError(error.localizedDescription)
         }

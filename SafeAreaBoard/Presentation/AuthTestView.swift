@@ -41,10 +41,10 @@ struct AuthTestView: View {
         .task {
             Task {
                 let getCurrentUserUseCase =  container.resolve((any GetCurrentUserUseCaseProtocol).self)!
-                let getProfileUseCase =  container.resolve((any GetProfileUseCaseProtocol).self)!
+                let getProfileUseCase =  container.resolve((any GetCurrentUserProfileUseCaseProtocol).self)!
                 do {
                     if let user = try await getCurrentUserUseCase.execute(command: ()) {
-                        let profile = try await getProfileUseCase.execute(command: user.id)
+                        let profile = try await getProfileUseCase.execute(command: ())
                         self.profile = profile
                     }
                 } catch {

@@ -8,7 +8,7 @@
 import Foundation
 import os.log
 
-protocol UpdateFCMTokenUseCaseProtocol: UseCase where Command == String, Result == Void {
+protocol UpdateFCMTokenUseCaseProtocol: UseCase where Command == String?, Result == Void {
 }
 
 struct UpdateFCMTokenUseCase: UpdateFCMTokenUseCaseProtocol {
@@ -21,7 +21,7 @@ struct UpdateFCMTokenUseCase: UpdateFCMTokenUseCaseProtocol {
         self.authService = authService
     }
     
-    func execute(command: String) async throws {
+    func execute(command: String?) async throws {
         do {
             if let myUserId = try await authService.getCurrentUser()?.id {
                 try await profileRepository.updateFCMToken(of: myUserId, to: command)

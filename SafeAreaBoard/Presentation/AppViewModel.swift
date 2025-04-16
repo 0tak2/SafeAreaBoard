@@ -17,7 +17,7 @@ final class AppViewModel: ObservableObject {
     @Published var isAlertShow = false
     
     private let getAuthStateChangeAsnycStreamUseCase: any GetAuthStateChangeAsyncStreamUseCaseProtocol
-    private let getCurrentUserProfileUseCase: any GetProfileUseCaseProtocol
+    private let getCurrentUserProfileUseCase: any GetCurrentUserProfileUseCaseProtocol
     private let signInWithIdTokenUseCase: any SignInWithIdTokenUseCaseProtocol
     private let updateNicknameUseCase: any UpdateNicknameUseCaseProtocol
     
@@ -27,7 +27,7 @@ final class AppViewModel: ObservableObject {
     
     init(
         getAuthStateChangeAsnycStreamUseCase: any GetAuthStateChangeAsyncStreamUseCaseProtocol,
-        getCurrentUserProfileUseCase: any GetProfileUseCaseProtocol,
+        getCurrentUserProfileUseCase: any GetCurrentUserProfileUseCaseProtocol,
         signInWithIdTokenUseCase: any SignInWithIdTokenUseCaseProtocol,
         updateNicknameUseCase: any UpdateNicknameUseCaseProtocol
     ) {
@@ -53,7 +53,7 @@ final class AppViewModel: ObservableObject {
                 }
                 
                 do {
-                    let profile = try await getCurrentUserProfileUseCase.execute(command: session.user.id)
+                    let profile = try await getCurrentUserProfileUseCase.execute(command: ())
                     log.info("signedIn - userId=\(profile.userId?.uuidString ?? "N/A") nickname=\(profile.nickname ?? "N/A")")
                     if let nickname = profile.nickname,
                        !nickname.isEmpty {
