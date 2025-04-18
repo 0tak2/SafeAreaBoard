@@ -298,7 +298,7 @@ final class DIContainerProvider {
             )
         }
         
-        container.register(SettingViewModel.self) { r in
+        container.register(MyViewModel.self) { r in
             guard let getUserProfileUseCase = r.resolve((any GetCurrentUserProfileUseCaseProtocol).self) else {
                 fatalError("GetCurrentUserProfileUseCase not resolved")
             }
@@ -319,7 +319,7 @@ final class DIContainerProvider {
                 fatalError("UserDefaultsRepository not resolved")
             }
             
-            return SettingViewModel(
+            return MyViewModel(
                 getUserProfileUseCase: getUserProfileUseCase,
                 updateNicknameUseCase: updateNicknameUseCase,
                 updateFCMTokenUseCase: updateFCMTokenUseCase,

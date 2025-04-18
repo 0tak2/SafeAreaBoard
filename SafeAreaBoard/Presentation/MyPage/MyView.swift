@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct SettingView: View {
-    @StateObject private var viewModel: SettingViewModel
+struct MyView: View {
+    @StateObject private var viewModel: MyViewModel
     @FocusState var textFieldFocused: Bool
     
-    init(viewModel: SettingViewModel) {
+    init(viewModel: MyViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
     }
     
@@ -63,7 +63,7 @@ struct SettingView: View {
     let authService = AuthService(supabaseClient: SupabaseProvider.shared.supabase)
     let profileRepository = ProfileRepository(supabaseClient: SupabaseProvider.shared.supabase)
     
-    SettingView(viewModel: SettingViewModel(
+    MyView(viewModel: MyViewModel(
         getUserProfileUseCase: GetCurrentUserProfileUseCase(
             authService: authService,
             profileRepository: profileRepository

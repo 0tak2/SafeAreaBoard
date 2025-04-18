@@ -11,7 +11,7 @@ import UserNotifications
 import os.log
 import SwiftUI
 
-final class SettingViewModel: ObservableObject {
+final class MyViewModel: ObservableObject {
     @Published var isError = false
     @Published var editingUserName = ""
     @Published var isOnNotification: Bool = false
