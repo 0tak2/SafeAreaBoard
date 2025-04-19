@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SpriteKit
 import os.log
 
 struct BoardContainerView: View {
@@ -22,18 +23,27 @@ struct BoardContainerView: View {
     
     var body: some View {
         NavigationStack(path: $navigationRouter.paths) {
-            BoardContentView(viewModel: viewModel)
-                .onAppear() {
-                    viewModel.navigationRouter = navigationRouter // is it best?
-                }
-                .navigationDestination(for: NavigationRouter.Path.self) { path in
-                    switch path {
-                    case .edit(let question, let postOrNil):
-                        WriteView(viewModel: resolveWirteViewModel(question: question, post: postOrNil))
-                    default:
-                        Text("not supported path in current context")
+            ZStack {
+                if viewModel.showingHeartParticle {
+                    GeometryReader { proxy in
+                        SpriteView(scene: HeartEffectScene(size: proxy.size), options: [.allowsTransparency])
                     }
                 }
+                
+                BoardContentView(viewModel: viewModel)
+            }
+            .animation(.smooth, value: viewModel.showingHeartParticle)
+            .onAppear() {
+                viewModel.navigationRouter = navigationRouter // is it best?
+            }
+            .navigationDestination(for: NavigationRouter.Path.self) { path in
+                switch path {
+                case .edit(let question, let postOrNil):
+                    WriteView(viewModel: resolveWirteViewModel(question: question, post: postOrNil))
+                default:
+                    Text("not supported path in current context")
+                }
+            }
         }
     }
     
