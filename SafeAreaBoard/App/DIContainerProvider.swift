@@ -349,9 +349,19 @@ final class DIContainerProvider {
                 fatalError("RemovePostUseCase not resolved")
             }
             
+            guard let addReactionUseCase = r.resolve((any AddReactionUseCaseProtocol).self) else {
+                fatalError("AddReactionUseCase not resolved")
+            }
+            
+            guard let removeReactionUseCase = r.resolve((any RemoveReactionUseCaseProtocol).self) else {
+                fatalError("RemoveReactionUseCase not resolved")
+            }
+            
             return MyPostsViewModel(
                 getAllMyPostsUseCase: getAllMyPostsUseCase,
-                removePostUseCase: removePostUseCase
+                removePostUseCase: removePostUseCase,
+                addReactionUseCase: addReactionUseCase,
+                removeReactionUseCase: removeReactionUseCase
             )
         }
     }

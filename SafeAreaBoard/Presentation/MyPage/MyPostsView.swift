@@ -75,7 +75,7 @@ struct MyPostsView: View {
     }
     
     func makeQuestionAndPostView(post: PostWithQuestion) -> some View {
-        VStack {
+        return VStack {
             HStack {
                 Text(post.question?.content ?? "")
                     .font(.callout)
@@ -87,12 +87,12 @@ struct MyPostsView: View {
             
             CardView(
                 post: post,
-                editButtonTapped: viewModel.menuButtonTapped
+                editButtonTapped: viewModel.menuButtonTapped,
+                heartButtonTapped: viewModel.heartButtonTapped(postId:isLiked:)
             )
             .onTapGesture {
                 viewModel.cardViewTapped(post: post)
             }
-            .id(post.id)
         }
         .padding(16)
     }
@@ -101,6 +101,7 @@ struct MyPostsView: View {
 #Preview {
     let postRepository = PostRepository(supabaseClient: SupabaseProvider.shared.supabase)
     let authService = AuthService(supabaseClient: SupabaseProvider.shared.supabase)
+    let reactionRepository = ReactionRepository(supabaseClient: SupabaseProvider.shared.supabase)
     
     MyPostsView(
         viewModel: MyPostsViewModel(
@@ -110,6 +111,14 @@ struct MyPostsView: View {
             ),
             removePostUseCase: RemovePostUseCase(
                 postRepository: postRepository,
+                authService: authService
+            ),
+            addReactionUseCase: AddReactionUseCase(
+                reactionRepository: reactionRepository,
+                authService: authService
+            ),
+            removeReactionUseCase: RemoveReactionUseCase(
+                reactionRepository: reactionRepository,
                 authService: authService
             )
         ),

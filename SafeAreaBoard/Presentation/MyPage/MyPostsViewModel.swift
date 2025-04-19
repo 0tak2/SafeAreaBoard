@@ -12,7 +12,7 @@ final class MyPostsViewModel: ObservableObject {
     @Published var myPosts: [PostWithQuestion] = [] {
         didSet {
             print("Updated!!")
-            print(myPosts)
+            print(myPosts.last!.reactions?.count)
         }
     }
     @Published var selectedPost: PostWithQuestion?
@@ -23,15 +23,21 @@ final class MyPostsViewModel: ObservableObject {
     
     private let getAllMyPostsUseCase: any GetAllMyPostsUseCaseProtocol
     private let removePostUseCase: any RemovePostUseCaseProtocol
+    private let addReactionUseCase: any AddReactionUseCaseProtocol
+    private let removeReactionUseCase: any RemoveReactionUseCaseProtocol
     
     private let log = Logger.of("MyPostsViewModel")
     
     init(
         getAllMyPostsUseCase: any GetAllMyPostsUseCaseProtocol,
-        removePostUseCase: any RemovePostUseCaseProtocol
+        removePostUseCase: any RemovePostUseCaseProtocol,
+        addReactionUseCase: any AddReactionUseCaseProtocol,
+        removeReactionUseCase: any RemoveReactionUseCaseProtocol
     ) {
         self.getAllMyPostsUseCase = getAllMyPostsUseCase
         self.removePostUseCase = removePostUseCase
+        self.addReactionUseCase = addReactionUseCase
+        self.removeReactionUseCase = removeReactionUseCase
     }
     
     private func fetchMyPosts() async throws -> [PostWithQuestion] {
@@ -50,6 +56,46 @@ final class MyPostsViewModel: ObservableObject {
                 }
             } catch {
                 log.error("removePostUseCase error: \(error)")
+                
+                await MainActor.run {
+                    isError = true
+                }
+            }
+        }
+    }
+    
+    private func addReaction(postId: Int) {
+        Task {
+            do {
+                try await addReactionUseCase.execute(command: postId)
+                log.debug("added reaction to post \(postId)")
+                
+                let posts = try await fetchMyPosts()
+                await MainActor.run {
+                    myPosts = posts
+                }
+            } catch {
+                log.error("addReactionUseCase error: \(error)")
+                
+                await MainActor.run {
+                    isError = true
+                }
+            }
+        }
+    }
+    
+    private func removeReaction(postId: Int) {
+        Task {
+            do {
+                try await removeReactionUseCase.execute(command: postId)
+                log.debug("revoked reaction from post \(postId)")
+                
+                let posts = try await fetchMyPosts()
+                await MainActor.run {
+                    myPosts = posts
+                }
+            } catch {
+                log.error("removeReactionUseCase error: \(error)")
                 
                 await MainActor.run {
                     isError = true
@@ -92,5 +138,13 @@ final class MyPostsViewModel: ObservableObject {
     func cardViewTapped(post: PostWithQuestion) {
         selectedPost = post
         showingDetailsSheet = true
+    }
+    
+    func heartButtonTapped(postId: Int, isLiked: Bool) {
+        if isLiked {
+            addReaction(postId: postId)
+        } else {
+            removeReaction(postId: postId)
+        }
     }
 }
