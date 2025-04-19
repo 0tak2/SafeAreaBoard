@@ -92,6 +92,7 @@ struct CardView: View {
             }
             .padding(16)
         }
+        .sensoryFeedback(.impact(weight: .heavy, intensity: 1), trigger: likesCount)
         .onAppear() {
             isLikedByMySelf = post.isReactedByMyself
             likesCount = post.reactions?.count ?? 0
