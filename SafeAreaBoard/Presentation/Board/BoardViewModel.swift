@@ -20,6 +20,7 @@ final class BoardViewModel: ObservableObject {
     @Published var showingQuestionList: Bool = false
     @Published var showingDeleteConfirmAlert: Bool = false
     @Published var navigationRouter: NavigationRouter
+    @Published var showingHeartParticle: Bool = false
     
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let getAllPostsUseCase: any GetAllPostsUseCaseProtocol
@@ -107,6 +108,8 @@ final class BoardViewModel: ObservableObject {
             do {
                 try await addReactionUseCase.execute(command: postId)
                 log.debug("added reaction to post \(postId)")
+                
+                await  startHeartEffect()
             } catch {
                 log.error("addReactionUseCase error: \(error)")
                 
@@ -114,6 +117,16 @@ final class BoardViewModel: ObservableObject {
                     isError = true
                 }
             }
+        }
+    }
+    
+    private func startHeartEffect() async {
+        await MainActor.run {
+            showingHeartParticle = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            self.showingHeartParticle = false
         }
     }
     
@@ -138,7 +151,7 @@ final class BoardViewModel: ObservableObject {
     
     func deletePostConfirmed() {
         guard let myPost = myPost,
-        let id = myPost.id else { return }
+              let id = myPost.id else { return }
         
         removePost(postId: id)
     }
