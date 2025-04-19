@@ -9,12 +9,7 @@ import Foundation
 import os.log
 
 final class MyPostsViewModel: ObservableObject {
-    @Published var myPosts: [PostWithQuestion] = [] {
-        didSet {
-            print("Updated!!")
-            print(myPosts.last!.reactions?.count)
-        }
-    }
+    @Published var myPosts: [PostWithQuestion] = []
     @Published var selectedPost: PostWithQuestion?
     @Published var showingEditSheet: Bool = false
     @Published var showingDetailsSheet: Bool = false
