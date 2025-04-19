@@ -25,7 +25,7 @@ struct MainTabView: View {
                 BoardContainerView(viewModel: boardViewModel)
             }
             
-            Tab("설정", systemImage: "gearshape") {
+            Tab("마이", systemImage: "person.crop.square") {
                 MyView(viewModel: settingViewModel)
             }
         }
