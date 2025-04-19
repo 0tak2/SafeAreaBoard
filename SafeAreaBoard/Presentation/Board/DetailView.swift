@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct DetailView: View {
-    @Binding var post: PostWithOwnership?
+struct DetailView<P: PostRenderable>: View {
+    @Binding var post: P?
     
     var shouldShowUpdatedDate: Bool {
         guard let post = post,

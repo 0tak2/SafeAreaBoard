@@ -26,7 +26,7 @@ struct AppView: View {
                         SetPreferenceView(viewModel: viewModel)
                     } else {
                         let boardViewModel = container.resolve(BoardViewModel.self)! // FIXME: should think about the way of injecting
-                        let settingViewModel = container.resolve(SettingViewModel.self)!
+                        let settingViewModel = container.resolve(MyViewModel.self)!
                         
                         MainTabView(
                             boardViewModel: boardViewModel,

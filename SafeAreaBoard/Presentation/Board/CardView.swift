@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct CardView: View {
-    private var post: PostWithOwnership
-    private var editButtonTapped: (() -> Void)?
+    private var post: PostRenderable
+    private var editButtonTapped: ((_ postId: Int) -> Void)?
     private var heartButtonTapped: ((_ postId: Int, _ isAddingReaction: Bool) -> Void)?
     
     @State private var isLikedByMySelf = false
     @State private var likesCount = 0
     
-    init(post: PostWithOwnership, editButtonTapped: ( () -> Void)? = nil, heartButtonTapped: ( (_: Int, _: Bool) -> Void)? = nil) {
+    init(post: PostRenderable, editButtonTapped: ( (Int) -> Void)? = nil, heartButtonTapped: ( (_: Int, _: Bool) -> Void)? = nil) {
         self.post = post
         self.editButtonTapped = editButtonTapped
         self.heartButtonTapped = heartButtonTapped
@@ -42,7 +42,9 @@ struct CardView: View {
                     
                     if post.isMine {
                         Button {
-                            editButtonTapped?()
+                            if let postId = post.id {
+                                editButtonTapped?(postId)
+                            }
                         } label: {
                             Image(systemName: "ellipsis")
                                 .resizable()
@@ -99,7 +101,7 @@ struct CardView: View {
 
 #Preview {
     CardView(
-        post: .init(
+        post: PostWithOwnership(
             id: nil,
             content: "테스트",
             createdAt: Date(),

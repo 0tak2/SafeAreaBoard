@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PostWithOwnership {
+struct PostWithOwnership: PostRenderable {
     let id: Int?
     let content: String?
     let createdAt: Date?

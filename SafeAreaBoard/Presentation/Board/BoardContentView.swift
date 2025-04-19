@@ -52,11 +52,11 @@ struct BoardContentView: View {
                 
                 LazyVStack(spacing: 24) {
                     if let myPost = viewModel.myPost {
-                        CardView(post: myPost) {
+                        CardView(post: myPost, editButtonTapped: { _ in
                             viewModel.menuButtonTapped()
-                        } heartButtonTapped: { postId, isLiked in
+                        }, heartButtonTapped: { postId, isLiked in
                             viewModel.heartButtonTapped(postId: postId, isLiked: isLiked)
-                        }
+                        })
                         .id(myPost.id)
                         .onTapGesture {
                             viewModel.cardViewTapped(post: myPost)
@@ -174,5 +174,5 @@ struct BoardContentView: View {
             postRepository: postRepository,
             authService: authService
         )
-    ), navigationRouter: BoardNavigationRouter())
+    ), navigationRouter: NavigationRouter())
 }

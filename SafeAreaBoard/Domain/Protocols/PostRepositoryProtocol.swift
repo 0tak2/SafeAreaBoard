@@ -8,6 +8,7 @@
 import Foundation
 
 protocol PostRepositoryProtocol {
+    func getAll(userId: UUID) async throws -> [Post]
     func getAll(questionId: Int) async throws -> [Post]
     func getOne(postId: Int) async throws -> Post?
     func getOne(questionId: Int, profileId: UUID) async throws -> Post?

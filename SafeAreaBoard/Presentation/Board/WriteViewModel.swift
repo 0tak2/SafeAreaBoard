@@ -15,7 +15,7 @@ final class WriteViewModel: ObservableObject {
     @Published var isError: Bool = false
     @Published var showingAlert: Bool = false
     @Published var isEditMode: Bool = false
-    var navigationRouter: BoardNavigationRouter?
+    var navigationRouter: NavigationRouter?
     
     private let addPostUseCase: any AddPostUseCaseProtocol
     private let updatePostUseCase: any UpdatePostUseCaseProtocol
@@ -25,7 +25,7 @@ final class WriteViewModel: ObservableObject {
     init(
         addPostUseCase: any AddPostUseCaseProtocol,
         updatePostUseCase: any UpdatePostUseCaseProtocol,
-        navigationRouter: BoardNavigationRouter? = nil
+        navigationRouter: NavigationRouter? = nil
     ) {
         self.addPostUseCase = addPostUseCase
         self.updatePostUseCase = updatePostUseCase

@@ -221,6 +221,18 @@ final class DIContainerProvider {
             
             return RemovePostUseCase(postRepository: postRepository, authService: authService)
         }
+        
+        container.register((any GetAllMyPostsUseCaseProtocol).self) { r in
+            guard let postRepository = r.resolve(PostRepositoryProtocol.self) else {
+                fatalError("ReactionRepository not resolved")
+            }
+            
+            guard let authService = r.resolve(AuthServiceProtocol.self) else {
+                fatalError("AuthService not resolved")
+            }
+            
+            return GetAllMyPostsUseCase(postRespository: postRepository, authService: authService)
+        }
     }
     
     private func registerPresentationLayer() {
@@ -298,7 +310,7 @@ final class DIContainerProvider {
             )
         }
         
-        container.register(SettingViewModel.self) { r in
+        container.register(MyViewModel.self) { r in
             guard let getUserProfileUseCase = r.resolve((any GetCurrentUserProfileUseCaseProtocol).self) else {
                 fatalError("GetCurrentUserProfileUseCase not resolved")
             }
@@ -319,12 +331,37 @@ final class DIContainerProvider {
                 fatalError("UserDefaultsRepository not resolved")
             }
             
-            return SettingViewModel(
+            return MyViewModel(
                 getUserProfileUseCase: getUserProfileUseCase,
                 updateNicknameUseCase: updateNicknameUseCase,
                 updateFCMTokenUseCase: updateFCMTokenUseCase,
                 logoutUseCase: logoutUseCase,
                 userDefaultRepository: userDefaultsRepository
+            )
+        }
+        
+        container.register(MyPostsViewModel.self) { r in
+            guard let getAllMyPostsUseCase = r.resolve((any GetAllMyPostsUseCaseProtocol).self) else {
+                fatalError("GetAllMyPostsUseCase not resolved")
+            }
+            
+            guard let removePostUseCase = r.resolve((any RemovePostUseCaseProtocol).self) else {
+                fatalError("RemovePostUseCase not resolved")
+            }
+            
+            guard let addReactionUseCase = r.resolve((any AddReactionUseCaseProtocol).self) else {
+                fatalError("AddReactionUseCase not resolved")
+            }
+            
+            guard let removeReactionUseCase = r.resolve((any RemoveReactionUseCaseProtocol).self) else {
+                fatalError("RemoveReactionUseCase not resolved")
+            }
+            
+            return MyPostsViewModel(
+                getAllMyPostsUseCase: getAllMyPostsUseCase,
+                removePostUseCase: removePostUseCase,
+                addReactionUseCase: addReactionUseCase,
+                removeReactionUseCase: removeReactionUseCase
             )
         }
     }

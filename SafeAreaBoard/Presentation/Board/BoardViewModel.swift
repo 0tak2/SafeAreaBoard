@@ -19,7 +19,7 @@ final class BoardViewModel: ObservableObject {
     @Published var showingDetailsSheet: Bool = false
     @Published var showingQuestionList: Bool = false
     @Published var showingDeleteConfirmAlert: Bool = false
-    @Published var navigationRouter: BoardNavigationRouter
+    @Published var navigationRouter: NavigationRouter
     
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
     private let getAllPostsUseCase: any GetAllPostsUseCaseProtocol
@@ -35,7 +35,7 @@ final class BoardViewModel: ObservableObject {
         addReactionUseCase: any AddReactionUseCaseProtocol,
         removeReactionUseCase: any RemoveReactionUseCaseProtocol,
         removePostUseCase: any RemovePostUseCaseProtocol,
-        navigationRouter: BoardNavigationRouter = BoardNavigationRouter()
+        navigationRouter: NavigationRouter = NavigationRouter()
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.getAllPostsUseCase = getAllPostsUseCase
@@ -186,6 +186,7 @@ final class BoardViewModel: ObservableObject {
                 isHidden: post.isHidden,
                 profileId: post.profileId,
                 questionId: post.questionId,
+                question: nil,
                 profile: post.profile,
                 reactions: post.reactions
             )

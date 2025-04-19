@@ -11,7 +11,7 @@ import UserNotifications
 import os.log
 import SwiftUI
 
-final class SettingViewModel: ObservableObject {
+final class MyViewModel: ObservableObject {
     @Published var isError = false
     @Published var editingUserName = ""
     @Published var isOnNotification: Bool = false
@@ -66,7 +66,9 @@ final class SettingViewModel: ObservableObject {
             .store(in: &subscriptions)
         } catch {
             log.error("failed to fetch user preferences: \(error)")
-            isError = true
+            await MainActor.run {
+                isError = true
+            }
         }
     }
     
