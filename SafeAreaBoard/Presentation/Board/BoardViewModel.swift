@@ -186,6 +186,7 @@ final class BoardViewModel: ObservableObject {
                 isHidden: post.isHidden,
                 profileId: post.profileId,
                 questionId: post.questionId,
+                question: nil,
                 profile: post.profile,
                 reactions: post.reactions
             )

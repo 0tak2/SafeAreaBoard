@@ -16,6 +16,20 @@ final class PostRepository: PostRepositoryProtocol {
         self.supabaseClient = supabaseClient
     }
     
+    func getAll(userId: UUID) async throws -> [Post] {
+        let posts: [Post] = try await supabaseClient
+            .from(tableName)
+            .select("*, profiles(*), reactions(*, profiles(*)), questions(*)")
+            .eq("profile_id", value: userId)
+            .eq("is_deleted", value: false)
+            .eq("is_hidden", value: false)
+            .order("id", ascending: false)
+            .execute()
+            .value
+        
+        return posts
+    }
+    
     func getAll(questionId: Int) async throws -> [Post] {
         let posts: [Post] = try await supabaseClient
             .from(tableName)

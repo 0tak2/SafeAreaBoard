@@ -221,6 +221,18 @@ final class DIContainerProvider {
             
             return RemovePostUseCase(postRepository: postRepository, authService: authService)
         }
+        
+        container.register((any GetAllMyPostsUseCaseProtocol).self) { r in
+            guard let postRepository = r.resolve(PostRepositoryProtocol.self) else {
+                fatalError("ReactionRepository not resolved")
+            }
+            
+            guard let authService = r.resolve(AuthServiceProtocol.self) else {
+                fatalError("AuthService not resolved")
+            }
+            
+            return GetAllMyPostsUseCase(postRespository: postRepository, authService: authService)
+        }
     }
     
     private func registerPresentationLayer() {
@@ -325,6 +337,21 @@ final class DIContainerProvider {
                 updateFCMTokenUseCase: updateFCMTokenUseCase,
                 logoutUseCase: logoutUseCase,
                 userDefaultRepository: userDefaultsRepository
+            )
+        }
+        
+        container.register(MyPostsViewModel.self) { r in
+            guard let getAllMyPostsUseCase = r.resolve((any GetAllMyPostsUseCaseProtocol).self) else {
+                fatalError("GetAllMyPostsUseCase not resolved")
+            }
+            
+            guard let removePostUseCase = r.resolve((any RemovePostUseCaseProtocol).self) else {
+                fatalError("RemovePostUseCase not resolved")
+            }
+            
+            return MyPostsViewModel(
+                getAllMyPostsUseCase: getAllMyPostsUseCase,
+                removePostUseCase: removePostUseCase
             )
         }
     }

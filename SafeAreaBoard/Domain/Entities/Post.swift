@@ -16,6 +16,7 @@ struct Post: Decodable, Hashable {
     let isHidden: Bool?
     let profileId: UUID?
     let questionId: Int?
+    let question: Question?
     let profile: Profile?
     let reactions: [Reaction]?
     
@@ -28,6 +29,7 @@ struct Post: Decodable, Hashable {
         case isHidden = "is_hidden"
         case profileId = "profile_id"
         case questionId = "question_id"
+        case question = "questions"
         case profile = "profiles"
         case reactions
     }
