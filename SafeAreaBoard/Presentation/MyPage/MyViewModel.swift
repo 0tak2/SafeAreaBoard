@@ -66,7 +66,9 @@ final class MyViewModel: ObservableObject {
             .store(in: &subscriptions)
         } catch {
             log.error("failed to fetch user preferences: \(error)")
-            isError = true
+            await MainActor.run {
+                isError = true
+            }
         }
     }
     
