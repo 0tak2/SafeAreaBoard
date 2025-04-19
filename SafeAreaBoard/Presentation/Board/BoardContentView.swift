@@ -174,5 +174,5 @@ struct BoardContentView: View {
             postRepository: postRepository,
             authService: authService
         )
-    ), navigationRouter: BoardNavigationRouter())
+    ), navigationRouter: NavigationRouter())
 }

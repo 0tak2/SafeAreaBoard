@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import os.log
 
 struct BoardContainerView: View {
     @StateObject private var viewModel: BoardViewModel
-    @StateObject private var navigationRouter: BoardNavigationRouter
+    @StateObject private var navigationRouter: NavigationRouter
     @EnvironmentObject private var container: DIContainerEnvironment
     
-    init(viewModel: BoardViewModel, navigationRouter: BoardNavigationRouter = BoardNavigationRouter()) {
+    private let log = Logger.of("BoardContainerView")
+    
+    init(viewModel: BoardViewModel, navigationRouter: NavigationRouter = NavigationRouter()) {
         self._viewModel = StateObject(wrappedValue: viewModel)
         self._navigationRouter = StateObject(wrappedValue: navigationRouter)
     }
@@ -23,20 +26,27 @@ struct BoardContainerView: View {
                 .onAppear() {
                     viewModel.navigationRouter = navigationRouter // is it best?
                 }
-                .navigationDestination(for: BoardNavigationRouter.Path.self) { path in
+                .navigationDestination(for: NavigationRouter.Path.self) { path in
                     switch path {
                     case .edit(let question, let postOrNil):
-                        let wrtieViewModel = container.resolve(WriteViewModel.self)!
-                        wrtieViewModel.navigationRouter = navigationRouter
-                        
-                        if let post = postOrNil {
-                            wrtieViewModel.configure(isEditMode: true, question: question, post: post)
-                        } else {
-                            wrtieViewModel.configure(isEditMode: false, question: question, post: nil)
-                        }
-                        return WriteView(viewModel: wrtieViewModel)
+                        WriteView(viewModel: resolveWirteViewModel(question: question, post: postOrNil))
+                    default:
+                        Text("not supported path in current context")
                     }
                 }
         }
+    }
+    
+    func resolveWirteViewModel(question: Question, post: Post?) -> WriteViewModel {
+        let wrtieViewModel = container.resolve(WriteViewModel.self)!
+        wrtieViewModel.navigationRouter = navigationRouter
+        
+        if let post = post {
+            wrtieViewModel.configure(isEditMode: true, question: question, post: post)
+        } else {
+            wrtieViewModel.configure(isEditMode: false, question: question, post: nil)
+        }
+        
+        return wrtieViewModel
     }
 }
