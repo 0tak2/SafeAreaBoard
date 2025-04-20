@@ -9,10 +9,11 @@ import SwiftUI
 
 struct BoardContentView: View {
     @StateObject private var viewModel: BoardViewModel
-    @EnvironmentObject private var container: DIContainerEnvironment
+    @ObservedObject private var navigationRouter: NavigationRouter
     
-    init(viewModel: BoardViewModel) {
+    init(viewModel: BoardViewModel, navigationRouter: NavigationRouter) {
         self._viewModel = StateObject(wrappedValue: viewModel)
+        self.navigationRouter = navigationRouter
     }
     
     var body: some View {
@@ -23,7 +24,20 @@ struct BoardContentView: View {
                 if viewModel.myPost == nil {
                     HStack {
                         Button {
-                            viewModel.writeButtonTapped()
+                            guard let question = viewModel.selectedQuestion else { return }
+                            
+                            navigationRouter.goForward(to: .edit(
+                                Question(
+                                    questionId: question.questionId,
+                                    content: question.content,
+                                    createdAt: question.createdAt,
+                                    updatedAt: question.updatedAt,
+                                    isDeleted: question.isDeleted,
+                                    isHidden: question.isHidden,
+                                    posts: question.posts
+                                ),
+                                nil
+                            ))
                         } label: {
                             Text("작성")
                                 .font(.footnote)
@@ -82,7 +96,35 @@ struct BoardContentView: View {
         }
         .confirmationDialog("편집 메뉴", isPresented: $viewModel.showingEditSheet) {
             Button("수정", role: .none) {
-                viewModel.editButtonTapped()
+                guard let selectedQuestion = viewModel.selectedQuestion,
+                      let myPost = viewModel.myPost else {
+                    return
+                }
+                
+                navigationRouter.goForward(to: .edit(
+                    Question(
+                        questionId: selectedQuestion.questionId,
+                        content: selectedQuestion.content,
+                        createdAt: selectedQuestion.createdAt,
+                        updatedAt: selectedQuestion.updatedAt,
+                        isDeleted: selectedQuestion.isDeleted,
+                        isHidden: selectedQuestion.isHidden,
+                        posts: selectedQuestion.posts
+                    ),
+                    Post(
+                        id: myPost.id,
+                        content: myPost.content,
+                        createdAt: myPost.createdAt,
+                        updatedAt: myPost.updatedAt,
+                        isDeleted: myPost.isDeleted,
+                        isHidden: myPost.isHidden,
+                        profileId: myPost.profileId,
+                        questionId: myPost.questionId,
+                        question: nil,
+                        profile: myPost.profile,
+                        reactions: myPost.reactions
+                    )
+                ))
             }
             Button("삭제", role: .destructive) {
                 viewModel.deleteButtonTapped()

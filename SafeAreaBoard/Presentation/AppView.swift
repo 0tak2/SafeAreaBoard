@@ -10,7 +10,6 @@ import AuthenticationServices
 
 struct AppView: View {
     @StateObject private var viewModel: AppViewModel
-    @EnvironmentObject private var container: DIContainerEnvironment
     
     init(viewModel: AppViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -25,12 +24,9 @@ struct AppView: View {
                     if viewModel.isSignedIn && viewModel.nicknameSettingNeeded {
                         SetPreferenceView(viewModel: viewModel)
                     } else {
-                        let boardViewModel = container.resolve(BoardViewModel.self)! // FIXME: should think about the way of injecting
-                        let settingViewModel = container.resolve(MyViewModel.self)!
-                        
                         MainTabView(
-                            boardViewModel: boardViewModel,
-                            settingViewModel: settingViewModel
+                            boardViewModel: Resolver.resolve(),
+                            settingViewModel: Resolver.resolve()
                         )
                     }
                 }

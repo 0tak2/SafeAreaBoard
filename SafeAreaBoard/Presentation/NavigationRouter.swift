@@ -14,4 +14,12 @@ final class NavigationRouter: ObservableObject {
         case edit(Question, Post?)
         case myPosts
     }
+    
+    func goForward(to path: Path) {
+        paths.append(path)
+    }
+    
+    func goBack() {
+        paths.removeLast()
+    }
 }

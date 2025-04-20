@@ -47,7 +47,7 @@ struct MyPostsView: View {
                     reactions: postWithQuestion.reactions
                 )
                 
-                navigationRouter.paths.append(.edit(question, post))
+                navigationRouter.goForward(to: .edit(question, post))
             }
             Button("삭제", role: .destructive) {
                 viewModel.deleteButtonTapped()

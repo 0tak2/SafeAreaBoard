@@ -12,7 +12,6 @@ struct MyView: View {
     @StateObject private var navigationRouter = NavigationRouter()
     @FocusState var textFieldFocused: Bool
     @State private var showingMyPosts: Bool = false
-    @EnvironmentObject private var container: DIContainerEnvironment
     
     init(viewModel: MyViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -26,16 +25,16 @@ struct MyView: View {
                         Text("닉네임")
                         TextField("", text: $viewModel.editingUserName)
                             .focused($textFieldFocused)
-                            .toolbar {
-                                ToolbarItem(placement: .keyboard) {
-                                    HStack {
-                                        Spacer()
-                                        Button("완료") {
-                                            textFieldFocused = false
-                                        }
-                                    }
-                                }
-                            }
+//                            .toolbar {
+//                                ToolbarItem(placement: .keyboard) {
+//                                    HStack {
+//                                        Spacer()
+//                                        Button("완료") {
+//                                            textFieldFocused = false
+//                                        }
+//                                    }
+//                                }
+//                            }
                     }
                 }
                 
@@ -63,10 +62,14 @@ struct MyView: View {
             .navigationDestination(for: NavigationRouter.Path.self) { path in
                 switch path {
                 case .edit(let question, let postOrNil):
-                    WriteView(viewModel: resolveWirteViewModel(question: question, post: postOrNil))
+                    WriteView(
+                        viewModel: Resolver.resolve { resolved in
+                            resolved.configure(isEditMode: postOrNil != nil, question: question, post: postOrNil)
+                        },
+                        navigationRouter: navigationRouter
+                    )
                 case .myPosts:
-                    let myPostsViewModel = container.resolve(MyPostsViewModel.self)!
-                    MyPostsView(viewModel: myPostsViewModel, navigationRouter: navigationRouter)
+                    MyPostsView(viewModel: Resolver.resolve(), navigationRouter: navigationRouter)
                 }
             }
             .toolbar {
@@ -81,19 +84,6 @@ struct MyView: View {
         .task {
             await viewModel.startTask()
         }
-    }
-    
-    func resolveWirteViewModel(question: Question, post: Post?) -> WriteViewModel {
-        let wrtieViewModel = container.resolve(WriteViewModel.self)!
-        wrtieViewModel.navigationRouter = navigationRouter
-        
-        if let post = post {
-            wrtieViewModel.configure(isEditMode: true, question: question, post: post)
-        } else {
-            wrtieViewModel.configure(isEditMode: false, question: question, post: nil)
-        }
-        
-        return wrtieViewModel
     }
 }
 
