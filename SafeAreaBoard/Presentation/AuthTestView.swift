@@ -10,7 +10,6 @@ import SwiftUI
 struct AuthTestView: View {
     @State private var profile: Profile?
     @State private var isError: Bool = false
-    @EnvironmentObject private var container: DIContainerEnvironment
     
     var body: some View {
         VStack {
@@ -28,7 +27,7 @@ struct AuthTestView: View {
             Button("로그아웃") {
                 Task {
                     print("start signOut")
-                    let usecase =  container.resolve((any LogoutUseCaseProtocol).self)!
+                    let usecase: any LogoutUseCaseProtocol = Resolver.resolve()
                     do {
                         try await usecase.execute(command: ())
                     } catch {
@@ -40,8 +39,8 @@ struct AuthTestView: View {
         }
         .task {
             Task {
-                let getCurrentUserUseCase =  container.resolve((any GetCurrentUserUseCaseProtocol).self)!
-                let getProfileUseCase =  container.resolve((any GetCurrentUserProfileUseCaseProtocol).self)!
+                let getCurrentUserUseCase: any GetCurrentUserUseCaseProtocol =  Resolver.resolve()
+                let getProfileUseCase: any GetCurrentUserProfileUseCaseProtocol = Resolver.resolve()
                 do {
                     if let user = try await getCurrentUserUseCase.execute(command: ()) {
                         let profile = try await getProfileUseCase.execute(command: ())

@@ -19,7 +19,6 @@ final class BoardViewModel: ObservableObject {
     @Published var showingDetailsSheet: Bool = false
     @Published var showingQuestionList: Bool = false
     @Published var showingDeleteConfirmAlert: Bool = false
-    @Published var navigationRouter: NavigationRouter
     @Published var showingHeartParticle: Bool = false
     
     private let getAllQuestionsUseCase: any GetAllQuestionsUseCaseProtocol
@@ -35,15 +34,13 @@ final class BoardViewModel: ObservableObject {
         getAllPostsUseCase: any GetAllPostsUseCaseProtocol,
         addReactionUseCase: any AddReactionUseCaseProtocol,
         removeReactionUseCase: any RemoveReactionUseCaseProtocol,
-        removePostUseCase: any RemovePostUseCaseProtocol,
-        navigationRouter: NavigationRouter = NavigationRouter()
+        removePostUseCase: any RemovePostUseCaseProtocol
     ) {
         self.getAllQuestionsUseCase = getAllQuestionsUseCase
         self.getAllPostsUseCase = getAllPostsUseCase
         self.addReactionUseCase = addReactionUseCase
         self.removeReactionUseCase = removeReactionUseCase
         self.removePostUseCase = removePostUseCase
-        self.navigationRouter = navigationRouter
     }
     
     func taskDidStart() async {
@@ -174,53 +171,6 @@ final class BoardViewModel: ObservableObject {
                 }
             }
         }
-    }
-    
-    func editButtonTapped() {
-        guard let question = selectedQuestion,
-              let post = myPost else { return }
-        
-        navigationRouter.paths.append(.edit(
-            Question(
-                questionId: question.questionId,
-                content: question.content,
-                createdAt: question.createdAt,
-                updatedAt: question.updatedAt,
-                isDeleted: question.isDeleted,
-                isHidden: question.isHidden,
-                posts: question.posts
-            ),
-            Post(
-                id: post.id,
-                content: post.content,
-                createdAt: post.createdAt,
-                updatedAt: post.updatedAt,
-                isDeleted: post.isDeleted,
-                isHidden: post.isHidden,
-                profileId: post.profileId,
-                questionId: post.questionId,
-                question: nil,
-                profile: post.profile,
-                reactions: post.reactions
-            )
-        ))
-    }
-    
-    func writeButtonTapped() {
-        guard let question = selectedQuestion else { return }
-        
-        navigationRouter.paths.append(.edit(
-            Question(
-                questionId: question.questionId,
-                content: question.content,
-                createdAt: question.createdAt,
-                updatedAt: question.updatedAt,
-                isDeleted: question.isDeleted,
-                isHidden: question.isHidden,
-                posts: question.posts
-            ),
-            nil
-        ))
     }
     
     func cardViewTapped(post: PostWithOwnership) {

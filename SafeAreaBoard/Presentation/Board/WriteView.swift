@@ -9,9 +9,11 @@ import SwiftUI
 
 struct WriteView: View {
     @ObservedObject private var viewModel: WriteViewModel
+    @ObservedObject private var navigationRouter: NavigationRouter
     
-    init(viewModel: WriteViewModel) {
+    init(viewModel: WriteViewModel, navigationRouter: NavigationRouter) {
         self.viewModel = viewModel
+        self.navigationRouter = navigationRouter
     }
     
     var body: some View {
@@ -34,6 +36,7 @@ struct WriteView: View {
         .toolbar {
             Button {
                 viewModel.saveButtonTapped()
+                navigationRouter.goBack()
             } label: {
                 Text("저장")
             }
@@ -83,6 +86,7 @@ struct WriteView: View {
                 postRepository: postRepository,
                 authService: authService
             )
-        )
+        ),
+        navigationRouter: NavigationRouter()
     )
 }

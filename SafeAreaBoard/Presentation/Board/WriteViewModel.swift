@@ -15,7 +15,6 @@ final class WriteViewModel: ObservableObject {
     @Published var isError: Bool = false
     @Published var showingAlert: Bool = false
     @Published var isEditMode: Bool = false
-    var navigationRouter: NavigationRouter?
     
     private let addPostUseCase: any AddPostUseCaseProtocol
     private let updatePostUseCase: any UpdatePostUseCaseProtocol
@@ -24,12 +23,10 @@ final class WriteViewModel: ObservableObject {
     
     init(
         addPostUseCase: any AddPostUseCaseProtocol,
-        updatePostUseCase: any UpdatePostUseCaseProtocol,
-        navigationRouter: NavigationRouter? = nil
+        updatePostUseCase: any UpdatePostUseCaseProtocol
     ) {
         self.addPostUseCase = addPostUseCase
         self.updatePostUseCase = updatePostUseCase
-        self.navigationRouter = navigationRouter
     }
     
     func saveButtonTapped() {
@@ -72,7 +69,6 @@ final class WriteViewModel: ObservableObject {
                 selectedQuestion = nil
                 editingContent = ""
                 previousCreatedAt = nil
-                navigationRouter?.paths.removeLast()
             }
         } catch {
             log.error("save post failed. \(error)")

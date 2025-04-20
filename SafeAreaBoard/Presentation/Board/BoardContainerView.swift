@@ -12,7 +12,6 @@ import os.log
 struct BoardContainerView: View {
     @StateObject private var viewModel: BoardViewModel
     @StateObject private var navigationRouter: NavigationRouter
-    @EnvironmentObject private var container: DIContainerEnvironment
     
     private let log = Logger.of("BoardContainerView")
     
@@ -30,33 +29,26 @@ struct BoardContainerView: View {
                     }
                 }
                 
-                BoardContentView(viewModel: viewModel)
+                BoardContentView(viewModel: Resolver.resolve(), navigationRouter: navigationRouter)
             }
             .animation(.smooth, value: viewModel.showingHeartParticle)
-            .onAppear() {
-                viewModel.navigationRouter = navigationRouter // is it best?
-            }
             .navigationDestination(for: NavigationRouter.Path.self) { path in
                 switch path {
                 case .edit(let question, let postOrNil):
-                    WriteView(viewModel: resolveWirteViewModel(question: question, post: postOrNil))
+                    WriteView(
+                        viewModel: Resolver.resolve { resolved in
+                            if let post = postOrNil {
+                                resolved.configure(isEditMode: true, question: question, post: post)
+                            } else {
+                                resolved.configure(isEditMode: false, question: question, post: nil)
+                            }
+                        },
+                        navigationRouter: navigationRouter
+                    )
                 default:
                     Text("not supported path in current context")
                 }
             }
         }
-    }
-    
-    func resolveWirteViewModel(question: Question, post: Post?) -> WriteViewModel {
-        let wrtieViewModel = container.resolve(WriteViewModel.self)!
-        wrtieViewModel.navigationRouter = navigationRouter
-        
-        if let post = post {
-            wrtieViewModel.configure(isEditMode: true, question: question, post: post)
-        } else {
-            wrtieViewModel.configure(isEditMode: false, question: question, post: nil)
-        }
-        
-        return wrtieViewModel
     }
 }
