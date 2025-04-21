@@ -29,7 +29,7 @@ struct BoardContainerView: View {
                     }
                 }
                 
-                BoardContentView(viewModel: Resolver.resolve(), navigationRouter: navigationRouter)
+                BoardContentView(viewModel: viewModel, navigationRouter: navigationRouter)
             }
             .animation(.smooth, value: viewModel.showingHeartParticle)
             .navigationDestination(for: NavigationRouter.Path.self) { path in
