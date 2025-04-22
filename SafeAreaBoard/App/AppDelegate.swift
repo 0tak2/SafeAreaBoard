@@ -17,9 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let log = Logger.of("AppDelegate")
     private let updateFCMTokenUseCase: any UpdateFCMTokenUseCaseProtocol
     private let userDefaultRepository: any UserDefaultsRepositoryProtocol
-    private var isRemoteNotficationEnabled: Bool {
-        let isRemoteNotficationEnabled: Bool? = userDefaultRepository.get(key: .onRemoteNotification)
-        return isRemoteNotficationEnabled ?? true // default value: true
+    private var isRemoteNotficationEnabled: RemoteNotficationPreference {
+        let rawValue: Int = userDefaultRepository.get(key: .onRemoteNotification) ?? 0
+        return RemoteNotficationPreference(rawValue: rawValue) ?? .notDetermined
     }
     
     override init() {
@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             completionHandler: { _, _ in }
         )
         
-        if isRemoteNotficationEnabled {
+        if isRemoteNotficationEnabled == .notDetermined || isRemoteNotficationEnabled == .authorized {
             application.registerForRemoteNotifications()
         } else {
             application.unregisterForRemoteNotifications()
