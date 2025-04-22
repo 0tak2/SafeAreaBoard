@@ -11,6 +11,7 @@ struct MyPostsView: View {
     @State private var isError: Bool = false
     @StateObject private var viewModel: MyPostsViewModel
     @ObservedObject private var navigationRouter: NavigationRouter
+    @State private var isLoading: Bool = false
     
     init(viewModel: MyPostsViewModel, navigationRouter: NavigationRouter) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -67,11 +68,10 @@ struct MyPostsView: View {
                 .presentationDragIndicator(.visible)
         }
         .navigationTitle("내가 공유한 경험")
-        .onAppear() {
-            Task {
-                viewModel.loadPosts()
-            }
+        .task(isLoading: $isLoading) {
+            await viewModel.loadPosts()
         }
+        .loading(isLoading: isLoading)
     }
     
     func makeQuestionAndPostView(post: PostWithQuestion) -> some View {

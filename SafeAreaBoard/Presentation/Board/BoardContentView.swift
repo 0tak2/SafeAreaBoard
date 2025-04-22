@@ -10,6 +10,7 @@ import SwiftUI
 struct BoardContentView: View {
     @StateObject private var viewModel: BoardViewModel
     @ObservedObject private var navigationRouter: NavigationRouter
+    @State private var isLoading: Bool = false
     
     init(viewModel: BoardViewModel, navigationRouter: NavigationRouter) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -91,9 +92,10 @@ struct BoardContentView: View {
             .padding(16)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .task {
+        .task(isLoading: $isLoading) {
             await viewModel.taskDidStart()
         }
+        .loading(isLoading: isLoading)
         .confirmationDialog("편집 메뉴", isPresented: $viewModel.showingEditSheet) {
             Button("수정", role: .none) {
                 guard let selectedQuestion = viewModel.selectedQuestion,
