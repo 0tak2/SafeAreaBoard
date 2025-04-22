@@ -20,28 +20,38 @@ struct IntroPageView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-                .frame(height: 36)
-            
-            OnboardingHeaderView(title: "academy\n  .safeAreaBoard")
-            
-            VStack(alignment: .leading, spacing: 24) {
-                ForEach(introTexts, id: \.self) { text in
-                    Text("\(text)")
-                        .font(.body)
-                        .multilineTextAlignment(.leading)
+        Group {
+            if viewModel.showingOnboarding {
+                VStack(spacing: 0) {
+                    Spacer()
+                        .frame(height: 36)
+                    
+                    OnboardingHeaderView(title: "academy\n  .safeAreaBoard")
+                    
+                    VStack(alignment: .leading, spacing: 24) {
+                        ForEach(introTexts, id: \.self) { text in
+                            Text("\(text)")
+                                .font(.body)
+                                .multilineTextAlignment(.leading)
+                        }
+                    }
+                    .padding(48)
+                    
+                    
+                    SignInWithAppleButton { request in
+                        request.requestedScopes = [.email, .fullName]
+                    } onCompletion: { result in
+                        viewModel.signInComplete(result: result)
+                    }
+                    .fixedSize()
+                }
+            } else {
+                ZStack {
+                    CustomColors.warmWhite
+                    ProgressView()
+                        .tint(CustomColors.primary)
                 }
             }
-            .padding(48)
-            
-            
-            SignInWithAppleButton { request in
-                request.requestedScopes = [.email, .fullName]
-            } onCompletion: { result in
-                viewModel.signInComplete(result: result)
-            }
-            .fixedSize()
         }
         
 #if DEBUG

@@ -44,7 +44,7 @@ struct SetPreferenceView: View {
         .onTapGesture {
             isFocused = false
         }
-        .alert(isPresented: $viewModel.isAlertShow) {
+        .alert(isPresented: $viewModel.showingAlert) {
             Alert(title: Text("닉네임을 입력해 주세요"))
         }
         .frame(maxHeight: .infinity, alignment: .top)
