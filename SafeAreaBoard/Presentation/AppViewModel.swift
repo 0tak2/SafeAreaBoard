@@ -15,6 +15,7 @@ final class AppViewModel: ObservableObject {
     @Published var editingNickname = ""
     @Published var isError = false
     @Published var isAlertShow = false
+    @Published var showingOnboarding = false
     
     private let getAuthStateChangeAsnycStreamUseCase: any GetAuthStateChangeAsyncStreamUseCaseProtocol
     private let getCurrentUserProfileUseCase: any GetCurrentUserProfileUseCaseProtocol
@@ -42,11 +43,12 @@ final class AppViewModel: ObservableObject {
             log.info("auth state changed: \(state.event.rawValue)")
             
             if [.signedIn, .initialSession].contains(state.event) {
-                guard let session = state.session else {
+                guard let _ = state.session else {
                     log.info("session is nil")
                     await MainActor.run {
                         isSignedIn = false
                         userId = nil
+                        showingOnboarding = true
                     }
                     
                     continue
