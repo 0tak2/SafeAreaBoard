@@ -25,16 +25,16 @@ struct MyView: View {
                         Text("닉네임")
                         TextField("", text: $viewModel.editingUserName)
                             .focused($textFieldFocused)
-//                            .toolbar {
-//                                ToolbarItem(placement: .keyboard) {
-//                                    HStack {
-//                                        Spacer()
-//                                        Button("완료") {
-//                                            textFieldFocused = false
-//                                        }
-//                                    }
-//                                }
-//                            }
+                            .toolbar {
+                                ToolbarItem(placement: .keyboard) {
+                                    HStack {
+                                        Spacer()
+                                        Button("완료") {
+                                            textFieldFocused = false
+                                        }
+                                    }
+                                }
+                            }
                     }
                 }
                 
