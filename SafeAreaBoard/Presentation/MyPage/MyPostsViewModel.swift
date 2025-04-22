@@ -99,17 +99,15 @@ final class MyPostsViewModel: ObservableObject {
         }
     }
     
-    func loadPosts() {
-        Task {
-            do {
-                let posts = try await fetchMyPosts()
-                await MainActor.run {
-                    myPosts = posts
-                }
-            } catch {
-                log.error("failed to load my posts: \(error)")
-                isError = true
+    func loadPosts() async {
+        do {
+            let posts = try await fetchMyPosts()
+            await MainActor.run {
+                myPosts = posts
             }
+        } catch {
+            log.error("failed to load my posts: \(error)")
+            isError = true
         }
     }
     
