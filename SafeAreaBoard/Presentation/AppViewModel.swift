@@ -14,7 +14,7 @@ final class AppViewModel: ObservableObject {
     @Published var nicknameSettingNeeded = false
     @Published var editingNickname = ""
     @Published var isError = false
-    @Published var isAlertShow = false
+    @Published var showingAlert = false
     @Published var showingOnboarding = false
     
     private let getAuthStateChangeAsnycStreamUseCase: any GetAuthStateChangeAsyncStreamUseCaseProtocol
@@ -108,7 +108,7 @@ final class AppViewModel: ObservableObject {
         }
         
         guard !editingNickname.isEmpty else {
-            isAlertShow = true
+            showingAlert = true
             return
         }
         
