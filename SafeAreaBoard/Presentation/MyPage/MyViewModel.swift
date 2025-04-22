@@ -48,7 +48,10 @@ final class MyViewModel: ObservableObject {
             
             await MainActor.run {
                 editingUserName = currentUserProfile?.nickname ?? ""
-                isOnNotification = userDefaultRepository.get(key: .onRemoteNotification) ?? true
+                let remoteNotificationPreferenceRawValue: Int
+                    = userDefaultRepository.get(key: .onRemoteNotification) ?? 0
+                let remoteNotificationPreferece = RemoteNotficationPreference(rawValue: remoteNotificationPreferenceRawValue) ?? .notDetermined
+                isOnNotification = remoteNotificationPreferece != .denied
             }
             
             // MARK: register $isOnNotification sink
@@ -93,7 +96,7 @@ final class MyViewModel: ObservableObject {
             
             // 알림 비활성화
             await UIApplication.shared.unregisterForRemoteNotifications()
-            userDefaultRepository.set(false, forKey: .onRemoteNotification) // for next app launching
+            userDefaultRepository.set(RemoteNotficationPreference.denied.rawValue, forKey: .onRemoteNotification) // for next app launching
             log.info("notification disabled")
         }
     }
