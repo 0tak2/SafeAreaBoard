@@ -25,6 +25,8 @@ struct BoardContentView: View {
             ScrollView(showsIndicators: false) {
                 if viewModel.myPost == nil {
                     HStack {
+                        Spacer()
+                        
                         Button {
                             guard let question = viewModel.selectedQuestion else { return }
                             
@@ -42,17 +44,15 @@ struct BoardContentView: View {
                             ))
                         } label: {
                             Text("작성")
-                                .font(.footnote)
+                                .font(.callout)
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.black)
-                                .padding(.init(top: 4, leading: 16, bottom: 4, trailing: 16))
+                                .padding(.init(top: 8, leading: 24, bottom: 8, trailing: 24))
                                 .background(
                                     Capsule(style: .continuous)
                                         .fill(CustomColors.primary)
                                 )
                         }
-                        
-                        Spacer()
                     }
                     
                     Spacer()
@@ -61,7 +61,7 @@ struct BoardContentView: View {
                 
                 if viewModel.myPost == nil,
                    viewModel.posts.isEmpty {
-                    Text("아직 등록된 경험이 없습니다. 작성 버튼을 눌러 경험을 공유해보세요.")
+                    Text("아직 등록된 경험이 없습니다.\n작성 버튼을 눌러 경험을 공유해보세요.")
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -176,6 +176,7 @@ struct BoardContentView: View {
                         .frame(width: 36)
                 }
                 .foregroundStyle(CustomColors.primary)
+                .padding(.horizontal, 4)
                 
             }
             .frame(maxWidth: .infinity, alignment: .leading)
