@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct QuestionListView: View {
-    @Binding var questionList: [QuestionWithAnswerStatus]
+    var questionList: [QuestionWithAnswerStatus]
     var questionSelected: ((QuestionWithAnswerStatus) -> Void)?
     
-    init(questionList: Binding<[QuestionWithAnswerStatus]>, questionSelected: ( (QuestionWithAnswerStatus) -> Void)? = nil) {
-        self._questionList = questionList
+    init(questionList: [QuestionWithAnswerStatus], questionSelected: ( (QuestionWithAnswerStatus) -> Void)? = nil) {
+        self.questionList = questionList
         self.questionSelected = questionSelected
     }
     
@@ -46,7 +46,7 @@ struct QuestionListView: View {
 }
 
 #Preview {
-    QuestionListView(questionList: .constant(
+    QuestionListView(questionList:
         [
             .init(questionId: nil, content: "어린 시절 기억에 남는 순간이 있나요?", createdAt: nil, updatedAt: nil, isDeleted: nil, isHidden: nil, posts: nil, didAnswer: true),
             .init(questionId: nil, content: "어린 시절 기억에 남는 순간이 있나요?", createdAt: nil, updatedAt: nil, isDeleted: nil, isHidden: nil, posts: nil, didAnswer: true),
@@ -57,5 +57,5 @@ struct QuestionListView: View {
             .init(questionId: nil, content: "어린 시절 기억에 남는 순간이 있나요?", createdAt: nil, updatedAt: nil, isDeleted: nil, isHidden: nil, posts: nil, didAnswer: false),
             .init(questionId: nil, content: "어린 시절 기억에 남는 순간이 있나요?", createdAt: nil, updatedAt: nil, isDeleted: nil, isHidden: nil, posts: nil, didAnswer: false),
         ]
-    ))
+    )
 }
