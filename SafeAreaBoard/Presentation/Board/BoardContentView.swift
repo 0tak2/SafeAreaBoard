@@ -177,7 +177,7 @@ struct BoardContentView: View {
             
             if viewModel.showingQuestionList {
                 ScrollView {
-                    QuestionListView(questionList: $viewModel.questions) { question in
+                    QuestionListView(questionList: viewModel.questions) { question in
                         viewModel.questionTapped(question)
                     }
                 }
