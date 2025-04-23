@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct MyPostsView: View {
-    @State private var isError: Bool = false
     @StateObject private var viewModel: MyPostsViewModel
     @ObservedObject private var navigationRouter: NavigationRouter
     @State private var isLoading: Bool = false
+    @State private var showingError: Bool = false
     
     init(viewModel: MyPostsViewModel, navigationRouter: NavigationRouter) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -72,6 +72,14 @@ struct MyPostsView: View {
             await viewModel.loadPosts()
         }
         .loading(isLoading: isLoading)
+        .onChange(of: viewModel.errorMessage) { _, newValue in
+            if newValue != nil {
+                showingError = true
+            } else {
+                showingError = false
+            }
+        }
+        .error(message: viewModel.errorMessage, isShowing: showingError)
     }
     
     func makeQuestionAndPostView(post: PostWithQuestion) -> some View {

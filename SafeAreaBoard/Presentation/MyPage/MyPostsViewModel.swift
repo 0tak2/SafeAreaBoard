@@ -14,7 +14,7 @@ final class MyPostsViewModel: ObservableObject {
     @Published var showingEditSheet: Bool = false
     @Published var showingDetailsSheet: Bool = false
     @Published var showingDeleteConfirmAlert: Bool = false
-    @Published var isError: Bool = false
+    @Published var errorMessage: String?
     
     private let getAllMyPostsUseCase: any GetAllMyPostsUseCaseProtocol
     private let removePostUseCase: any RemovePostUseCaseProtocol
@@ -53,7 +53,7 @@ final class MyPostsViewModel: ObservableObject {
                 log.error("removePostUseCase error: \(error)")
                 
                 await MainActor.run {
-                    isError = true
+                    errorMessage = ErrorMessages.removePostError
                 }
             }
         }
@@ -73,7 +73,7 @@ final class MyPostsViewModel: ObservableObject {
                 log.error("addReactionUseCase error: \(error)")
                 
                 await MainActor.run {
-                    isError = true
+                    errorMessage = ErrorMessages.addReactionError
                 }
             }
         }
@@ -93,7 +93,7 @@ final class MyPostsViewModel: ObservableObject {
                 log.error("removeReactionUseCase error: \(error)")
                 
                 await MainActor.run {
-                    isError = true
+                    errorMessage = ErrorMessages.revokeReactionError
                 }
             }
         }
@@ -107,7 +107,7 @@ final class MyPostsViewModel: ObservableObject {
             }
         } catch {
             log.error("failed to load my posts: \(error)")
-            isError = true
+            errorMessage = ErrorMessages.fetchPostError
         }
     }
     

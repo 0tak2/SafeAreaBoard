@@ -11,6 +11,7 @@ struct BoardContentView: View {
     @StateObject private var viewModel: BoardViewModel
     @ObservedObject private var navigationRouter: NavigationRouter
     @State private var isLoading: Bool = false
+    @State private var showingError: Bool = false
     
     init(viewModel: BoardViewModel, navigationRouter: NavigationRouter) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -146,6 +147,14 @@ struct BoardContentView: View {
                 .presentationDragIndicator(.visible)
         }
         .animation(.spring, value: viewModel.showingQuestionList)
+        .onChange(of: viewModel.errorMessage) { _, newValue in
+            if newValue != nil {
+                showingError = true
+            } else {
+                showingError = false
+            }
+        }
+        .error(message: viewModel.errorMessage, isShowing: showingError)
     }
     
     var headerView: some View {
