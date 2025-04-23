@@ -160,14 +160,10 @@ struct BoardContentView: View {
     var headerView: some View {
         VStack {
             HStack {
-                HStack {
-                    Text(viewModel.selectedQuestion?.content ?? "")
-                        .font(.title)
-                        .fontWeight(.bold)
-                    
-                    Spacer()
-                }
-                .frame(width: 264)
+                Text(viewModel.selectedQuestion?.content ?? "")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .frame(minWidth: 264, maxWidth: 300, alignment: .leading)
                 
                 Spacer()
                 
