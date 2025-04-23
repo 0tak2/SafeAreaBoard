@@ -14,7 +14,7 @@ final class BoardViewModel: ObservableObject {
     @Published var selectedPost: PostWithOwnership?
     @Published var myPost: PostWithOwnership?
     @Published var posts: [PostWithOwnership] = []
-    @Published var isError: Bool = false
+    @Published var errorMessage: String?
     @Published var showingEditSheet: Bool = false
     @Published var showingDetailsSheet: Bool = false
     @Published var showingQuestionList: Bool = false
@@ -63,7 +63,7 @@ final class BoardViewModel: ObservableObject {
             }
         } catch {
             await MainActor.run {
-                isError = true
+                errorMessage = "질문을 불러오는 중 오류가 발생했습니다."
             }
         }
     }
@@ -83,7 +83,7 @@ final class BoardViewModel: ObservableObject {
             }
         } catch {
             await MainActor.run {
-                isError = true
+                errorMessage = "경험을 불러오는 중 오류가 발생했습니다."
             }
         }
     }
@@ -111,7 +111,7 @@ final class BoardViewModel: ObservableObject {
                 log.error("addReactionUseCase error: \(error)")
                 
                 await MainActor.run {
-                    isError = true
+                    errorMessage = "하트를 추가하는 중 오류가 발생했습니다."
                 }
             }
         }
@@ -136,7 +136,7 @@ final class BoardViewModel: ObservableObject {
                 log.error("removeReactionUseCase error: \(error)")
                 
                 await MainActor.run {
-                    isError = true
+                    errorMessage = "하트를 삭제하는 중 오류가 발생했습니다."
                 }
             }
         }
@@ -167,7 +167,7 @@ final class BoardViewModel: ObservableObject {
                 log.error("removePostUseCase error: \(error)")
                 
                 await MainActor.run {
-                    isError = true
+                    errorMessage = "경험을 삭제하는 중 오류가 발생했습니다."
                 }
             }
         }
