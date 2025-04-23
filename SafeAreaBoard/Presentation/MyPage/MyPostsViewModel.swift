@@ -53,7 +53,7 @@ final class MyPostsViewModel: ObservableObject {
                 log.error("removePostUseCase error: \(error)")
                 
                 await MainActor.run {
-                    errorMessage = "경험을 삭제하는 중 표시하는 중 오류가 발생했습니다."
+                    errorMessage = ErrorMessages.removePostError
                 }
             }
         }
@@ -73,7 +73,7 @@ final class MyPostsViewModel: ObservableObject {
                 log.error("addReactionUseCase error: \(error)")
                 
                 await MainActor.run {
-                    errorMessage = "하트를 추가하는 중에 오류가 발생했습니다."
+                    errorMessage = ErrorMessages.addReactionError
                 }
             }
         }
@@ -93,7 +93,7 @@ final class MyPostsViewModel: ObservableObject {
                 log.error("removeReactionUseCase error: \(error)")
                 
                 await MainActor.run {
-                    errorMessage = "하트를 삭제하는 중에 오류가 발생했습니다."
+                    errorMessage = ErrorMessages.revokeReactionError
                 }
             }
         }
@@ -107,7 +107,7 @@ final class MyPostsViewModel: ObservableObject {
             }
         } catch {
             log.error("failed to load my posts: \(error)")
-            errorMessage = "경험을 불러오는 중에 오류가 발생했습니다."
+            errorMessage = ErrorMessages.fetchPostError
         }
     }
     

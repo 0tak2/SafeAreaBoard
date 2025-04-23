@@ -63,7 +63,7 @@ final class BoardViewModel: ObservableObject {
             }
         } catch {
             await MainActor.run {
-                errorMessage = "질문을 불러오는 중 오류가 발생했습니다."
+                errorMessage = ErrorMessages.fetchQuestionError
             }
         }
     }
@@ -83,7 +83,7 @@ final class BoardViewModel: ObservableObject {
             }
         } catch {
             await MainActor.run {
-                errorMessage = "경험을 불러오는 중 오류가 발생했습니다."
+                errorMessage = ErrorMessages.fetchPostError
             }
         }
     }
@@ -111,7 +111,7 @@ final class BoardViewModel: ObservableObject {
                 log.error("addReactionUseCase error: \(error)")
                 
                 await MainActor.run {
-                    errorMessage = "하트를 추가하는 중 오류가 발생했습니다."
+                    errorMessage = ErrorMessages.addReactionError
                 }
             }
         }
@@ -136,7 +136,7 @@ final class BoardViewModel: ObservableObject {
                 log.error("removeReactionUseCase error: \(error)")
                 
                 await MainActor.run {
-                    errorMessage = "하트를 삭제하는 중 오류가 발생했습니다."
+                    errorMessage = ErrorMessages.revokeReactionError
                 }
             }
         }
@@ -167,7 +167,7 @@ final class BoardViewModel: ObservableObject {
                 log.error("removePostUseCase error: \(error)")
                 
                 await MainActor.run {
-                    errorMessage = "경험을 삭제하는 중 오류가 발생했습니다."
+                    errorMessage = ErrorMessages.removePostError
                 }
             }
         }
