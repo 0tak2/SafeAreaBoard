@@ -24,13 +24,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     override init() {
         let container = DIContainerProvider.shared.container
-        self.updateFCMTokenUseCase = container.resolve((any UpdateFCMTokenUseCaseProtocol).self)!
-        self.userDefaultRepository = container.resolve((any UserDefaultsRepositoryProtocol).self)!
-        
+        self.updateFCMTokenUseCase = Resolver.resolve()
+        self.userDefaultRepository = Resolver.resolve()
         super.init()
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        prepareForRemoteNotification(application: application)
+        return true
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        log.info("didRegisterForRemoteNotificationsWithDeviceToken deviceToken=\(deviceToken)")
+        updateFCMToken(deviceToken: deviceToken)
+    }
+}
+
+// MARK: Logics for prepare to recive remote notification
+extension AppDelegate {
+    private func prepareForRemoteNotification(application: UIApplication) {
         // MARK: Firebase
         FirebaseApp.configure()
         log.info("Firebase initialized")
@@ -52,13 +64,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             application.unregisterForRemoteNotifications()
         }
-        
-        return true
     }
     
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        log.info("didRegisterForRemoteNotificationsWithDeviceToken deviceToken=\(deviceToken)")
-        
+    private func updateFCMToken(deviceToken: Data) {
         Task {
             do {
                 // 현재 FCM 토큰이 유효한 경우 apnsToken을 할당해도 delegate의 didReceiveRegistrationToken이 호출되지 않는다.
