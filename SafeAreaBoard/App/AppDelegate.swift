@@ -23,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     override init() {
-        let container = DIContainerProvider.shared.container
         self.updateFCMTokenUseCase = Resolver.resolve()
         self.userDefaultRepository = Resolver.resolve()
         super.init()
